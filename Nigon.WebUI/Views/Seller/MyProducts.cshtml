@@ -1,0 +1,23 @@
+﻿@model Nigon.WebUI.Models.ProductsListViewModel
+@{
+    ViewBag.Title = "List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<ul class="product">
+    @foreach (var p in Model.Products)
+    {
+        string _subCategory = Model.subCategory.Where(w => w.SubCategoryID == p.SubCategoryID).Select(s => s.SubCategoryName).First();
+        <li>
+
+            <div id="imageInMainPage">
+                @{
+                  var imageUrl = p.ImgPreview == null ? "" : Url.Content(p.ImgPreview);
+                }
+                <img width="100" height="100" src="@imageUrl" />
+            </div>
+
+            <h3>@p.Price.ToString("c")</h3>
+            <h4>@Html.RouteLink(p.Name, new { controller = "Seller", action = "Edit", subcategory = _subCategory, productID = p.ProductID })</h4>
+        </li>
+    }
+</ul>

@@ -1,0 +1,39 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewBag.Title - My ASP.NET MVC Application</title>
+    <link href="@Url.Content("~/Content/images/favicon.ico")" rel="shortcut icon" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width" />
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/jquery")
+    @RenderSection("css", false)
+    @RenderSection("Scripts", false)
+</head>
+<body>
+    <div class="all">
+        <div id="header">
+            <div class="title">
+                @Html.ActionLink("Nigon.ru", "List", "Product")
+            </div>
+        </div>
+        <div id="clientBar">
+            @Html.Partial("LogOnPartial")
+        </div>
+        <div id="searchBar">
+            @Html.Partial("SearchBarPartial")
+        </div>
+        <div id="categories">
+            @{Html.RenderAction("Menu", "Nav");}
+        </div>
+        <div id="content">
+            @RenderBody()
+        </div>
+        <div class="footer">
+            <footer>
+                <p>&copy; @DateTime.Now.Year - nigon.ru</p>
+            </footer>
+        </div>
+    </div>
+</body>
+</html>
