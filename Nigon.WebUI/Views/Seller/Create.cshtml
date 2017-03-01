@@ -14,11 +14,10 @@
 <div class="editCreateLot"><h1 style="text-align:center">Создать лот</h1></div>
 @using (Html.BeginForm("Create", "Seller", FormMethod.Post))
 {
+    @ViewBag.Message 
     @Html.ValidationSummary()
     @Html.Partial("CreateEditPartialTable")
-    @Html.HiddenFor(model => model.fileImg, new { id = "hiddenStateID" }) 
-    <script></script>    
-    @ViewBag.Message 
+    @Html.HiddenFor(model => model.fileImg, new { id = "hiddenStateID" })   
 }
 <div id="preview">
 </div>

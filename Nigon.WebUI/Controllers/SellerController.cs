@@ -45,19 +45,19 @@ namespace Nigon.WebUI.Controllers
         {
             repositoryProductView.SaveProductView(productModel.productView);
 
-            int productViewId = repositoryProductView.ProductViews.OrderByDescending(p => p.ProductViewID).Select(s => s.ProductViewID).First(); // после записи данных в таблицу ProductViews извлекаем из нее ProductViewID и записываем в таблицу Products (для совпадения ProductViewID в обоих таблицах)
+            int productViewId = repositoryProductView.ProductViews.OrderByDescending(p => p.ProductViewID).Select(s => s.ProductViewID).First(); // after record data in table ProductViews get from that table - ProductViewID and record to the table Products (to match ProductViewID in both tables)
             productModel.products.ProductViewID = productViewId;
-            productModel.products.SubCategoryID = productModel.SelectedOrderId; //сохраняем выбранную подкатегорию из dropdownlist
+            productModel.products.SubCategoryID = productModel.SelectedOrderId; //save selected the subcategory from dropdownlist
             productModel.products.UserID = repositoryUser.Users.Where(w => w.UserName == User.Identity.Name).Select(s => s.UserID).Single();
             repositoryProducts.SaveProduct(productModel.products);
 
-            string filesImg = productModel.fileImg; //получаем имена файлов
+            string filesImg = productModel.fileImg; //get names of images
             if (filesImg != null && filesImg != "undefined")
             {
-                string[] files = filesImg.Split('?'); // разделяем их
-                string imgMainPageName = files[0]; //извлекаем имя файла для превью (первый в массиве)
+                string[] files = filesImg.Split('?'); // separate them
+                string imgMainPageName = files[0]; //get name of image for preview(first in array)
 
-                if (files != null && files.Count() < 8) // и сохраняем имена в бд(но не больше 8)
+                if (files != null && files.Count() < 8) // save names of images to the database(but no more than 8)
                     try
                     {
                         foreach (var file in files)
@@ -66,29 +66,30 @@ namespace Nigon.WebUI.Controllers
 
                             ImgProduct imgProduct = new ImgProduct
                             {
-                                PathImg = RenameFiles(nameOfPhoto, productViewId), //передаем текущее имя файла и id ProductView в метод RenameFiles (переименовываем файл, добавляя id в имя файла)
+                                PathImg = RenameFiles(nameOfPhoto, productViewId), //pass current name of image and id of ProductView to method RenameFiles (rename the file and add "id" in name of file)
                                 ProductID = productModel.products.ProductID
 
                             };
-                            repositoryImgProducts.SaveImage(imgProduct); // сохраняем имя файла изображения в бд
+                            repositoryImgProducts.SaveImage(imgProduct); // save name of image in database
                             nameOfPhoto = "";
 
                         }
-                        ViewBag.Message = "Ваше изображение успешно загружено.";
                     }
                     catch (Exception ex)
                     {
                         ViewBag.Message = "Ошибка:" + ex.Message.ToString();
+                        return View();
                     }
                 else
                 {
                     ViewBag.Message = "Вы загрузили неверный формат файла.";
+                    return View();
                 }
-                productModel.products.ImgPreview = RenameFiles(imgMainPageName, productViewId, "img_main_page"); //сохраняем картинку лота для главной страницы, передаем в метод имя файла, id ProductView и имя папки для файла превью
+                productModel.products.ImgPreview = RenameFiles(imgMainPageName, productViewId, "img_main_page"); //save the image of lot for main page, send to method name of file, "id" of ProductView and name of folder for preview image
             }
             repositoryProducts.SaveProduct(productModel.products);
 
-            productModel.ImgProducts = repositoryImgProducts.ImgProducts.Where(w => w.ProductID == productModel.products.ProductID); // загружаем фоты в модель для последующего отображения в окне создания товара
+            productModel.ImgProducts = repositoryImgProducts.ImgProducts.Where(w => w.ProductID == productModel.products.ProductID); // downloading images in model for the next displaying in "create page"
 
             return RedirectToAction("ProductView", "Product", new { productModel.products.ProductID });
         }
@@ -147,21 +148,24 @@ namespace Nigon.WebUI.Controllers
             repositoryImgProducts.DeleteImgProduct(imgProduct);
             string path = imgProduct.PathImg;
             string fullPath = Request.MapPath(path);
-            try
+
+            if (System.IO.File.Exists(fullPath))
             {
-                if (System.IO.File.Exists(fullPath))
+                try
                 {
                     System.IO.File.Delete(fullPath);
                 }
+                catch (Exception e)
+                {
+                    throw new Exception("error with deleting image", e);
+                }
             }
-            catch
-            {
-            }
+
             return Content("Edit");
         }
 
         [HttpPost]
-        public ActionResult Upload(string id)  //сохраняем файлы изображений с помощью AJAX
+        public ActionResult Upload(string id)  //save images via AJAX
         {
             if (HttpContext.Request.Files.AllKeys.Any())
             {
@@ -170,25 +174,28 @@ namespace Nigon.WebUI.Controllers
                     var file = HttpContext.Request.Files["files" + i];
                     if (file != null)
                     {
-                        var fileSavePath = Path.Combine(Server.MapPath(PathImgPart), file.FileName); // для галереи
-                        var ResizedFilePath = Path.Combine(Server.MapPath(SmallImgPart), file.FileName); //для превью главной страницы (preview)
+                        var fileSavePath = Path.Combine(Server.MapPath(PathImgPart), file.FileName); // fo gallery
+                        var ResizedFilePath = Path.Combine(Server.MapPath(SmallImgPart), file.FileName); //for preview on main page(preview)
 
                         try
                         {
-                            file.SaveAs(fileSavePath); // Сохраняем картинку со 100% качеством
+                            file.SaveAs(fileSavePath); // save a image with quality 100%
                             file.InputStream.Close();
                             file.InputStream.Dispose();
                         }
-                        catch { }
+                        catch (Exception e)
+                        {
+                            throw new Exception("error with saving image into gallery", e);
+                        }
 
-                        if (i == 0) //сохраняем в превью первое изображение в коллекции
+                        if (i == 0) //save first image in collection for the preview
                         {
                             Image img;
-                            using (var bmpTemp = new Bitmap(fileSavePath)) // получаем free file locked (изображение не занято процессом) 
+                            using (var bmpTemp = new Bitmap(fileSavePath)) // get free file locked (image isn't lock) 
                             {                                             
                                 img = new Bitmap(bmpTemp);
                             }
-                            // Сохраняем картинку с качеством 50%
+                            // save a image with quality 50%
                             SaveJpeg(ResizedFilePath, img, 50);
                         }
                     }
@@ -233,34 +240,47 @@ namespace Nigon.WebUI.Controllers
             string pathOldFileName;
             string pathNewFileName;
 
-            if (folder != "string" && folder != null) //если папка существует, то добавляем переименованные файлы в эту папку
+            if (folder != "string" && folder != null) //if the folder exist we add a renamed files to that folder
                 PathImgPart = PathImgPart + folder + "/";
 
             Random random = new Random();
             int randomNumber = random.Next(0, 100);
 
-            pathOldFileName = PathImgPart + oldFileName.Trim(); //  путь к файлу
-            pathNewFileName = PathImgPart + id.ToString() + "-" + randomNumber.ToString() + oldFileName.Trim(); //добавляем id ProductView, тире и рандомные цифры к именю файла, дабы избежать одинаковых имен
+            pathOldFileName = PathImgPart + oldFileName.Trim(); // the path to a file
+            pathNewFileName = PathImgPart + id.ToString() + "-" + randomNumber.ToString() + oldFileName.Trim(); //add id ProductView, then dash(-) and random numbers that avoid the the same names
           
-            string oldFile = Request.MapPath(pathOldFileName); // полный путь к файлу
-            string newFile = Request.MapPath(pathNewFileName); // полный путь к файлу
+            string oldFile = Request.MapPath(pathOldFileName); // the whole path to a file
+            string newFile = Request.MapPath(pathNewFileName); // the whole path to a file
 
             try
             {
                 using (StreamReader reader = new StreamReader(@oldFile))
                 {
-                    System.IO.File.Copy(oldFile, newFile); //копируем старый файл и присваиваем ему новое имя
+                    System.IO.File.Copy(oldFile, newFile); //copy new file and assign it new name
                     reader.Close();
                 }
                         
             }
-            catch { }
+            catch (Exception e)
+            {
+                throw new Exception("Ошибка при загрузке файла, пожалуйста, перезагрузите страницу и попробуйте снова", e);
+            }
             try
             {
-                System.IO.File.Delete(oldFile); //и удаляем старый файл
+                System.IO.File.Delete(oldFile); // delete old file
 
             }
-            catch { } 
+            catch (Exception ex)
+            {
+                string filePath = Request.MapPath("~/Errors/"); // save exception in txt file
+
+                using (StreamWriter writer = new StreamWriter(filePath, true))
+                {
+                    writer.WriteLine("Message :" + ex.Message + "<br/>" + Environment.NewLine + "StackTrace :" + ex.StackTrace +
+                       "" + Environment.NewLine + "Date :" + DateTime.Now.ToString());
+                    writer.WriteLine(Environment.NewLine + "-----------------------------------------------------------------------------" + Environment.NewLine);
+                }
+            }
             return pathNewFileName;
         }
     }

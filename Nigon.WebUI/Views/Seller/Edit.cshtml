@@ -21,6 +21,7 @@
 </div>
 @using (Html.BeginForm("Create", "Seller", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
+    @ViewBag.Message 
     @Html.ValidationSummary()
     @Html.Partial("CreateEditPartialTable")
     @Html.HiddenFor(model=>model.products.ProductID)
