@@ -1,0 +1,28 @@
+﻿@model Nigon.WebUI.Models.ProductViewModel
+@{
+    ViewBag.Title = "CreateProduct";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section css {
+    <link href="@Url.Content("~/Content/img_preview.css")" rel="stylesheet" type="text/css" />
+}
+@Scripts.Render("~/bundles/jqueryUi")
+@Styles.Render("~/Content/cssUi")
+@Scripts.Render("~/bundles/jqueryUiAddon")
+@Styles.Render("~/Content/cssUiAddon")
+
+<div class="editCreateLot"><h1 style="text-align:center">Создать лот</h1></div>
+@using (Html.BeginForm("Create", "Seller", FormMethod.Post))
+{
+    @ViewBag.Message 
+    @Html.ValidationSummary()
+    @Html.Partial("CreateEditPartialTable")
+    @Html.HiddenFor(model => model.fileImg, new { id = "hiddenStateID" })   
+}
+<div id="preview">
+</div>
+@Scripts.Render("~/bundles/dateTimePicker")
+@Html.Partial("CreateLot")
+@section Scripts {
+  @Html.Partial("JSValidation")  
+}

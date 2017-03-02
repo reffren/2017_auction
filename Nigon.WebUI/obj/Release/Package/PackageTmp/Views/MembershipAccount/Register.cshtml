@@ -1,0 +1,64 @@
+﻿@model Nigon.WebUI.Models.AccountMembershipModels.RegisterModel
+
+@{
+    ViewBag.Title = "Register";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<h2>Регистрация</h2>
+<p>
+    Заполните ваши данные.
+</p>
+<p>
+    Пароль должен содержать как минимум @Membership.MinRequiredPasswordLength букв.
+</p>
+
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true, "Произошла ошибка. Пожалуйста проверьте введеные данные и попробуйте снова.")
+    <div>
+        <fieldset>
+            <legend>Информация</legend>
+
+            <div class="editor-label">
+                @Html.LabelFor(m => m.UserName)
+            </div>
+            <div class="editor-field">
+                @Html.TextBoxFor(m => m.UserName)
+                @Html.ValidationMessageFor(m => m.UserName)
+            </div>
+
+            <div class="editor-label">
+                @Html.LabelFor(m => m.Email)
+            </div>
+            <div class="editor-field">
+                @Html.TextBoxFor(m => m.Email)
+                @Html.ValidationMessageFor(m => m.Email)
+            </div>
+
+            <div class="editor-label">
+                @Html.LabelFor(m => m.Password)
+            </div>
+            <div class="editor-field">
+                @Html.PasswordFor(m => m.Password)
+                @Html.ValidationMessageFor(m => m.Password)
+            </div>
+
+            <div class="editor-label">
+                @Html.LabelFor(m => m.ConfirmPassword)
+            </div>
+            <div class="editor-field">
+                @Html.PasswordFor(m => m.ConfirmPassword)
+                @Html.ValidationMessageFor(m => m.ConfirmPassword)
+            </div>
+
+            <p>
+                <input type="submit" value="Зарегистрироваться" />
+            </p>
+        </fieldset>
+    </div>
+}
+@section Scripts {
+    @Html.Partial("JSValidation")
+}

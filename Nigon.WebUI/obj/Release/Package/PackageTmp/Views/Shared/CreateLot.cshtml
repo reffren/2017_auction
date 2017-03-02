@@ -1,0 +1,94 @@
+﻿<script type="text/javascript">
+    var allFiles = []; //объявляем массив для загрузки имен изображений
+    var altImg = 0; //счетчик, которые подсчитывает порядок отображения картинок в превью (отображение в атрибуте alt)
+    $body = $("body");
+    $(document).on({
+        ajaxStart: function () { // загружаем гифку loading добавляя при этом css классы к элементам
+            $(".all").addClass("loading");
+            $(".tableCreateEdit").addClass("hideTable");
+           
+        },
+        ajaxStop: function () { // и удаляем классы с css стилями
+            $(".all").removeClass("loading");
+            $(".tableCreateEdit").removeClass("hideTable");
+        }
+    });
+
+    $(document).ready(function () {
+
+        $(function () {
+            $('#btn').on('click', function () {
+                var imgFiles = "";
+                for (a = 0; a < allFiles.length; a++) {
+                    imgFiles = imgFiles + allFiles[a];
+                    if (a + 1 != allFiles.length)
+                        imgFiles = imgFiles + "?" //разделяем массив файлов знаком "?"
+                }
+                $('#hiddenStateID').val(imgFiles); //присваиваем полю Html.HiddenFor полученную строку
+            });
+        });
+
+        $('#files').change(function () { // авто-загрузка картинок
+            //$("#upload").click(function () {
+            var data = new FormData();
+
+            //Add the Multiple selected files into the data object
+            var files = $("#files").get(0).files;
+            for (i = 0; i < files.length; i++) {
+                data.append("files" + i, files[i]);
+            }
+
+            //Post the data (files) to the server
+            if (files.length > 0) {
+                $.ajax({
+                    type: 'POST',
+                    url: "@Url.Action("Upload")",
+                    data: data,
+                    contentType: false,
+                    processData: false,
+                    success: function (data) {
+                        //alert("Ваше изображение успешно загружено!");
+
+                        // show thumbnail
+
+                        var output = document.getElementById("preview");
+
+                        for (var i = 0; i < files.length; i++) {
+                            var file = files[i];
+                            allFiles.push(files[i].name); //добавляем в массив картинки
+
+                            //Only pics
+                            if (!file.type.match('image'))
+                                continue;
+
+                            var picReader = new FileReader();
+
+                            picReader.addEventListener("load", function (event) {
+
+                                var picFile = event.target;
+
+                                var div = document.createElement("span");
+
+                                div.innerHTML = "<img class='thumbnail' alt='" + altImg + "'" + "src='" + picFile.result + "'/> <a href='#' class='remove_img_preview'></a>";
+                                altImg += 1;
+                                output.insertBefore(div, null);
+                                div.children[1].addEventListener("click", function (event) {
+                                    var s = div.firstChild.parentNode.firstChild.alt; //извлекаем значение атрибута alt
+                                    div.parentNode.removeChild(div); //удаляем span
+                                    delete allFiles[s]; //удаляем из массива имя картинки
+                                });
+
+                            });
+
+                            //Read the image
+                            picReader.readAsDataURL(file);
+                        }
+                    },
+                    error: function () {
+                        alert("Произошла ошибка!");
+                    },
+                });
+            }
+        });
+    });
+</script>
