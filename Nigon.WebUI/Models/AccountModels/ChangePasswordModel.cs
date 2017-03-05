@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
-namespace Nigon.WebUI.Models.AccountMembershipModels
+namespace Nigon.WebUI.Models.AccountModels
 {
     public class ChangePasswordModel
     {

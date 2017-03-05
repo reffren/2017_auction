@@ -10,7 +10,7 @@ using System.Web.Security;
 
 namespace Nigon.WebUI.Models
 {
-    public class CustomMembershipProvider : MembershipProvider
+    public class CustomAccountProvider : MembershipProvider
     {
         public override string ApplicationName
         {
@@ -123,7 +123,7 @@ namespace Nigon.WebUI.Models
             var user = usersContext.GetUser(username);
             if (user != null)
             {
-                var memUser = new MembershipUser("CustomMembershipProvider", username, user.UserID, user.UserEmailAddress,
+                var memUser = new MembershipUser("CustomAccountProvider", username, user.UserID, user.UserEmailAddress,
                                                             string.Empty, string.Empty,
                                                             true, false, DateTime.MinValue,
                                                             DateTime.MinValue,

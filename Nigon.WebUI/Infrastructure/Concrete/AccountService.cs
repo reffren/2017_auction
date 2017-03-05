@@ -7,16 +7,16 @@ using System.Web.Security;
 
 namespace Nigon.WebUI.Infrastructure.Concrete
 {
-    public class AccountMembershipService : IMembershipService
+    public class AccountService : IMembershipService
     {
         private readonly MembershipProvider _provider;
 
-        public AccountMembershipService()
+        public AccountService()
             : this(null)
         {
         }
 
-        public AccountMembershipService(MembershipProvider provider)
+        public AccountService(MembershipProvider provider)
         {
             _provider = provider ?? Membership.Provider;
         }

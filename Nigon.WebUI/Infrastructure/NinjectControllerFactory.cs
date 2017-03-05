@@ -31,7 +31,7 @@ namespace Nigon.WebUI.Infrastructure
             ninjectKernel.Bind<IProductsRepository>().To<EFDbProductsRepository>();
            // EmailSettings emailSettings = new EmailSettings { WriteAsFile = bool.Parse(ConfigurationManager.AppSettings["Email.WriteAsFile"] ?? "false") };
           //  ninjectKernel.Bind<IOrderProcessor>().To<EmailOrderProcessor>().WithConstructorArgument("settings", emailSettings);
-            ninjectKernel.Bind<IMembershipService>().To<AccountMembershipService>();
+            ninjectKernel.Bind<IMembershipService>().To<AccountService>();
             ninjectKernel.Bind<IFormsAuthenticationService>().To<FormsAuthenticationService>();
             ninjectKernel.Bind<IProductViewRepository>().To<EFDbProductViewRepository>();
             ninjectKernel.Bind<IImgProductRepository>().To<EFDbImgProductRepository>();

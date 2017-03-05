@@ -1,6 +1,6 @@
 ﻿using Nigon.WebUI.Infrastructure.Abstract;
 using Nigon.WebUI.Infrastructure.Concrete;
-using Nigon.WebUI.Models.AccountMembershipModels;
+using Nigon.WebUI.Models.AccountModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +11,7 @@ using System.Web.Security;
 
 namespace Nigon.WebUI.Controllers
 {
-    public class MembershipAccountController : Controller
+    public class AccountController : Controller
     {
         private IFormsAuthenticationService FormsService { get; set; }
         private IMembershipService MembershipService { get; set; }
@@ -19,7 +19,7 @@ namespace Nigon.WebUI.Controllers
         protected override void Initialize(RequestContext requestContext)
         {
             if (FormsService == null) { FormsService = new FormsAuthenticationService(); }
-            if (MembershipService == null) { MembershipService = new AccountMembershipService(); }
+            if (MembershipService == null) { MembershipService = new AccountService(); }
 
             base.Initialize(requestContext);
         }

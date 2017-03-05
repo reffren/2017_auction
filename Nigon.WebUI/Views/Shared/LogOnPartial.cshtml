@@ -4,7 +4,7 @@
         <tr>
             <td align="left">
                 Добро пожаловать <strong>@User.Identity.Name</strong>!
-                [ @Html.ActionLink("Выйти", "LogOff", "MembershipAccount") ]
+                [ @Html.ActionLink("Выйти", "LogOff", "Account") ]
             </td>
             <td align="right">
                 @Html.ActionLink("Создать лот", "Create", "Seller")
@@ -16,5 +16,5 @@
 }
 else
 {
-    @:[ @Html.ActionLink("Войти", "LogOn", "MembershipAccount") ]
+    @:[ @Html.ActionLink("Войти", "LogOn", "Account") ]
 }
