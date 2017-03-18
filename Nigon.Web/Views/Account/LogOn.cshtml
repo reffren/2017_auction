@@ -13,7 +13,7 @@
 
 @Html.ValidationSummary(true, "К сожалению произошла ошибка при вводе данных")
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("LogOn", "Account", FormMethod.Post))
 {
     <div id="logOnField">
         <fieldset>

@@ -22,7 +22,7 @@ namespace Nigon.Web.App_Start
 
             bundles.Add(new ScriptBundle("~/bundles/countDown").Include("~/Scripts/PartialScripts/countDown.js"));
             bundles.Add(new ScriptBundle("~/bundles/dateTimePicker").Include("~/Scripts/PartialScripts/dateTimePicker.js"));
-            bundles.Add(new ScriptBundle("~/bundles/scriptsForGalleryFancyBox").Include("~/Scripts/gallery/jquery.fancybox.js"));
+            bundles.Add(new ScriptBundle("~/bundles/scriptsForGalleryFancyBox").Include("~/Scripts/Gallery/jquery.fancybox.js"));
             bundles.Add(new ScriptBundle("~/bundles/galleryScript").Include("~/Scripts/PartialScripts/galleryScript.js"));
         }
     }

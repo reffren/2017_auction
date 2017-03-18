@@ -7,7 +7,7 @@ using System.Web.Security;
 
 namespace Nigon.Web.Infrastructure.Abstract
 {
-    interface IAccountService
+    public interface IAccountService
     {
         int MinPasswordLength { get; }
         bool ValidateUser(string userName, string password);

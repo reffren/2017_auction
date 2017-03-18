@@ -123,7 +123,7 @@ namespace Nigon.Web.Models.AccountModels
             var user = usersContext.GetUser(username);
             if (user != null)
             {
-                var memUser = new MembershipUser("CustomAccountProvider", username, user.UserID, user.UserEmailAddress,
+                var memUser = new MembershipUser("AccountProvider", username, user.UserID, user.UserEmailAddress,
                                                             string.Empty, string.Empty,
                                                             true, false, DateTime.MinValue,
                                                             DateTime.MinValue,

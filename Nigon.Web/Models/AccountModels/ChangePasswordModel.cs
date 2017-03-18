@@ -47,7 +47,6 @@ namespace Nigon.Web.Models.AccountModels
         public string UserName { get; set; }
 
 
-        // [DataType(DataType.EmailAddress)]
         [Display(Name = "Электронная почта")]
         [EmailAddress(ErrorMessage = "Введен некорректный e-mail")]
         public string Email { get; set; }

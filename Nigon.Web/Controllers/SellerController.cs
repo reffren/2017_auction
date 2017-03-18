@@ -39,11 +39,12 @@ namespace Nigon.Web.Controllers
 
         public ActionResult Create(ProductViewModel productModel)
         {
-            _repositoryProductView.SaveProductView(productModel.Products.ProductView);
+            _repositoryProductView.SaveProductView(productModel.Products.ProductView); //saving or updating data
+            productModel.Products.ProductView = null; // exclude double record when we will saving products data
 
-            if (productModel.Products.ProductView.ProductViewID == 0) //if create a record
+            if (productModel.Products.ProductView == null)  //create a record
                 productModel.Products.ProductViewID = _repositoryProductView.ProductViews.OrderByDescending(p => p.ProductViewID).Select(s => s.ProductViewID).First();
-            else //if update a record
+            else //update a record
                 productModel.Products.ProductViewID = productModel.Products.ProductView.ProductViewID;
 
             int productViewId = productModel.Products.ProductViewID;
