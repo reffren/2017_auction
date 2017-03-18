@@ -1,0 +1,19 @@
+﻿@model Nigon.Web.Models.ProductsListViewModel
+
+<ul class="product">
+    @foreach (var p in Model.Products)
+    {
+        string _subCategoryUrl = p.SubCategory.SubCategoryUrl;
+        <li>
+            <div id="imageInMainPage">
+                @{
+        var imageUrl = p.ImgPreview == null ? "" : Url.Content(p.ImgPreview);
+                }
+                <img width="100" height="100" src="@imageUrl" />
+            </div>
+
+            <h3>@p.Price.ToString("c")</h3>
+            <h4>@Html.RouteLink(p.Name, new { controller = "Product", action = "ProductView", subcategory = _subCategoryUrl, productID = p.ProductID })</h4>
+        </li>
+    }
+</ul>

@@ -1,0 +1,8 @@
+﻿@using (Html.BeginForm("List", "Product", FormMethod.Get))
+{
+    <p>
+        @Html.TextBox("search")
+
+        <input type="submit" value="Искать" />
+    </p>
+}
