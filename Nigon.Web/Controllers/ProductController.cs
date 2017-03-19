@@ -74,7 +74,11 @@ namespace Nigon.Web.Controllers
         [Authorize]
         public ActionResult ProductView(ProductViewModel prod)
         {
+            if (User.Identity.Name == null)
+                return RedirectToAction("Account", "LogOn");
+
             prod.Rate.UserID = _repositoryUser.Users.Where(w => w.UserName == User.Identity.Name).Select(s => s.UserID).Single();
+
             try
             {
                 prod.Rate.RateCount = _repositoryRate.Rates.Where(w => w.ProductID == prod.Rate.ProductID).Select(s => s.RateCount).First() + 1;

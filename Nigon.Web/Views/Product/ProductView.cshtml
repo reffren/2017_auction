@@ -75,15 +75,29 @@
 </div>
 
 <div class="assignRate">
-    @using (@Html.BeginForm("ProductView", "Product", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    @using (@Html.BeginForm("ProductView", "Product", FormMethod.Post, new { enctype = "multipart/form-data", name="formRate", onsubmit = "return validateSumRate();" }))
     {
-        <label>Ставка: &#8381;</label>@Html.EditorFor(model => model.Rate.SumRate, new { @class = "rateField" })
+        <label>Ставка: &#8381;</label>@Html.EditorFor(model => model.Rate.SumRate, new { @class = "rateField"})
         @Html.HiddenFor(model => model.Rate.ProductID, new { Value = Model.Products.ProductID })
-        @*@Html.HiddenFor(model => model.Products.ProductView.ProductViewID)*@
         @Html.HiddenFor(model => model.Rate.RateCount)
         @Html.HiddenFor(model => model.Rate.RateID)
         <input type="submit" id="button" value="Сделать ставку" />
         @ViewBag.Message
     }
 </div>
+<script type="text/javascript">
+    function validateSumRate() {
+        var stepPriceValue = '@Model.Products.ProductView.StepPrice';
+        var sumRate = document.forms["formRate"]["Rate.SumRate"].value;
+        var rgexp = new RegExp("^-*[0-9,\.]+$");
+        if (!rgexp.test(sumRate)) {
+            alert("Вы ввели неверное число");
+            return false;
+        }
+        if (sumRate >= stepPriceValue)
+            return true;
+        else
+            alert("Ставка должна быть не меньше шага ставки");
+    }
+</script>
 @Scripts.Render("~/bundles/countDown")
