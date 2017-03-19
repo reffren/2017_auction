@@ -1,10 +1,14 @@
-﻿using Nigon.Web.Infrastructure;
+﻿using Nigon.Data.Abstract;
+using Nigon.Data.Entities;
+using Nigon.Web.Infrastructure;
 using Nigon.Web.Infrastructure.Abstract;
 using Nigon.Web.Infrastructure.Concrete;
 using Nigon.Web.Models.AccountModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
@@ -16,6 +20,14 @@ namespace Nigon.Web.Controllers
     {
         private IFormsAuthenticationService FormsService { get; set; }
         private IAccountService MembershipService { get; set; }
+        private IUserActivationRepository _repositoryUserActivation;
+        private IUserRepository _repositoryUser;
+
+        public AccountController(IUserActivationRepository userActivation, IUserRepository user)
+        {
+            _repositoryUserActivation = userActivation;
+            _repositoryUser = user;
+        }
 
         protected override void Initialize(RequestContext requestContext)
         {
@@ -106,13 +118,65 @@ namespace Nigon.Web.Controllers
                 if (createStatus == MembershipCreateStatus.Success)
                 {
                     FormsService.SignIn(model.UserName, false /* createPersistentCookie */);
-                    return RedirectToAction("List", "Product");
+                    SendActivationEmail(model.UserName, model.Email);
+                    return RedirectToAction("ConfirmActivation", "Account");
                 }
                 ModelState.AddModelError("", ErrorCodeToString(createStatus));
             }
 
             // If we got this far, something failed, redisplay form
             return View(model);
+        }
+
+        public ActionResult ConfirmActivation()
+        {
+            return View();
+        }
+        public ActionResult Activation()
+        {
+            ViewBag.Message = "Ошибка! Неверный код активации!";
+            if (RouteData.Values["id"] != null)
+            {
+                Guid activationCode = new Guid(RouteData.Values["id"].ToString());
+                UserActivation userActivation = _repositoryUserActivation.UserActivations.Where(p => p.ActivationCode == activationCode.ToString()).FirstOrDefault();
+                if (userActivation != null)
+                {
+                    _repositoryUserActivation.DeleteUserActivation(userActivation);
+                    return RedirectToAction("List", "Product");
+                }
+            }
+
+            return View();
+        }
+        private void SendActivationEmail(string userName, string userEmail)
+        {
+            Guid activationCode = Guid.NewGuid();
+            UserActivation userActivation = new UserActivation()
+            {
+                UserID = _repositoryUser.Users.Where(f => f.UserName == userName).Select(s => s.UserID).Single(),
+                ActivationCode = activationCode.ToString(),
+            };
+
+            _repositoryUserActivation.SaveUserActivation(userActivation);
+
+            using (MailMessage mm = new MailMessage("info@nigon.ru", userEmail))
+            {
+                mm.Subject = "Account Activation";
+                string body = "Здравствуйте " + userName + ",";
+                body += "<br /><br />Пожалуйста, перейдите по этой ссылке для активации вашего аккаунта";
+                body += "<br /><a href = '" + string.Format("{0}://{1}/account/activation/{2}", Request.Url.Scheme, Request.Url.Authority, activationCode) + "'>Click here to activate your account.</a>";
+                body += "<br /><br />С уважением, nigon.ru";
+                mm.Body = body;
+                mm.IsBodyHtml = true;
+                SmtpClient smtp = new SmtpClient();
+                smtp.Host = "mail.nigon.ru";
+                smtp.EnableSsl = false;
+                NetworkCredential NetworkCred = new NetworkCredential("info@nigon.ru", "**********************");
+                smtp.UseDefaultCredentials = true;
+                smtp.Credentials = NetworkCred;
+                smtp.Port = 587;
+                smtp.Send(mm);
+            }
         }
 
         //

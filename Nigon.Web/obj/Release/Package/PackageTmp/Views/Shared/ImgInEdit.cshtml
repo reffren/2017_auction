@@ -1,0 +1,26 @@
+﻿@model Nigon.Data.Entities.ImgProduct
+
+<li>
+    <img class='thumbnail' width="200" height="200" src="@Url.Content(Model.PathImg)" /> <a href=javascript:void(0) class='remove_img_preview' onclick="deleteImgFunction(@Model.ImgProductID);"></a>
+</li>
+<script type="text/javascript">
+    function deleteImgFunction(_id) {
+        var idd = _id;
+        if (idd != null) {
+            $.ajax({
+                url: "@Url.Action("DeleteImage")",
+                data: { 'id': idd },
+                type: "post",
+                cache: false,
+                async: true,
+                success: function (result) {
+                    console.log(result);
+                    $("#preview").load(" #preview");
+                },
+                error: function () {
+                    alert('Произошла ошибка!');
+                }
+            });
+        }
+    }
+</script>

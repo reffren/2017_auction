@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <title>@ViewBag.Title - Аукцион - nigon.ru</title>
+    <link href="@Url.Content("~/Content/images/favicon.ico")" rel="shortcut icon" type="image/x-icon" />
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/jquery")
+    @RenderSection("css", false)
+    @RenderSection("Scripts", false)
+</head>
+<body>
+    <div class="all">
+        <div id="header">
+            <div class="title">
+                @Html.ActionLink("Nigon.ru", "List", "Product")
+            </div>
+        </div>
+        <div id="clientBar">
+            @Html.Partial("LogOnPartial")
+        </div>
+        <div id="searchBar">
+            @Html.Partial("SearchBarPartial")
+        </div>
+        <div id="categories">
+            @{Html.RenderAction("Menu", "Nav");}
+        </div>
+        <div id="content">
+            @RenderBody()
+        </div>
+        <div class="footer">
+            <footer>
+                <p>&copy; @DateTime.Now.Year - nigon.ru</p>
+            </footer>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,68 @@
+﻿@model Nigon.Web.Models.ProductViewModel
+<table class="tableCreateEdit">
+    <caption>Пожалуйста, введите необходимую информацию по лоту</caption>
+    <tr>
+        <td class="tdRight">Название:</td>
+        <td>@Html.TextBoxFor(model => model.Products.Name, new { @class = "editTextBox" })</td>
+    </tr>
+    <tr>
+        <td class="tdRight">Описание:</td>
+        <td>@Html.TextAreaFor(model => model.Products.Description, new { rows = 5, columns = 40, @id = "editTextArea" })</td>
+    </tr>
+    <tr>
+        <td class="tdRight">Текущая цена:</td>
+        <td>@Html.TextBoxFor(model => model.Products.Price, new { @class = "editTextBox" })</td>
+    </tr>
+    <tr>
+        <td class="tdRight">Категория:</td>
+        <td>
+            @{
+                List<SelectListItem> listItems = new List<SelectListItem>();
+                if (Model != null)
+                {
+                    foreach (var s in Model.SabCategories)
+                    {
+                        listItems.Add(new SelectListItem
+                        {
+                            Text = s.SubCategoryName,
+                            Value = s.SubCategoryID.ToString(),
+                        });
+                    }
+                }
+            }
+            @Html.DropDownListFor(model => model.Products.SubCategoryID, listItems, new { @id = "editDropDown" })
+        </td>
+    </tr>
+    <tr>
+        <td class="tdRight">Стартовая цена:</td>
+        <td>@Html.TextBoxFor(model => model.Products.ProductView.StartPrice, new { @class = "editTextBox" })</td>
+    </tr>
+    <tr>
+        <td class="tdRight">Шаг ставки:</td>
+        <td>@Html.TextBoxFor(model => model.Products.ProductView.StepPrice, new { @class = "editTextBox" })</td>
+    </tr>
+    <tr>
+        <td class="tdRight">Состояние товара:</td>
+        <td>@Html.TextBoxFor(model => model.Products.ProductView.StateOfProduct, new { @class = "editTextBox" })</td>
+    </tr>
+    <tr>
+        <td class="tdRight">Начало торгов:</td>
+        @{ Html.EnableClientValidation(false); }
+        <td>@Html.TextBoxFor(model => model.Products.ProductView.StartOfAuction, new { @class = "dateTimePicker" })</td>
+        @{ Html.EnableClientValidation(true); }
+    </tr>
+    <tr>
+        <td class="tdRight">Завершение торгов:</td>
+        @{ Html.EnableClientValidation(false); }
+        <td>@Html.TextBoxFor(model => model.Products.ProductView.EndOfAuction, new { @class = "dateTimePicker" })</td>
+        @{ Html.EnableClientValidation(true); }
+    </tr>
+    <tr>
+        <td class="tdRight">Местоположение:</td>
+        <td>@Html.TextBoxFor(model => model.Products.ProductView.Location, new { @class = "editTextBox" })</td>
+    </tr>
+    <tr>
+        <td><input type="submit" id="btn" value="Сохранить лот" style="margin-top: 20px;" /><br><br></td>
+        <td><input type='file' id="files" multiple="multiple" /></td>
+    </tr>
+</table>

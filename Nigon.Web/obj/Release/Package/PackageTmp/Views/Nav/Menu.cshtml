@@ -1,0 +1,19 @@
+﻿@model IEnumerable<Nigon.Data.Entities.Category>
+@{
+    Layout = null;
+}
+
+@foreach (var catlink in Model)
+{
+    <div id="groupOfCategory">
+        <div class="groupOfItems">
+            @catlink.CategoryName
+        </div>
+        <div class="itemOfCategory">
+            @foreach (var sublink in catlink.SubCategory)
+            {
+                @Html.RouteLink(sublink.SubCategoryName, new { controller = "Product", action = "List", subcategory = sublink.SubCategoryUrl, page = 1 }, new { @class = sublink.SubCategoryName == ViewBag.SelectedCategory ? "selected" : null })
+            }
+        </div>
+    </div>
+}

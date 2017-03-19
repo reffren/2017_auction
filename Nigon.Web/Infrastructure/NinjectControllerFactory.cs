@@ -29,8 +29,6 @@ namespace Nigon.Web.Infrastructure
         private void AddBindings()
         {
             ninjectKernel.Bind<IProductRepository>().To<ProductRepository>();
-            // EmailSettings emailSettings = new EmailSettings { WriteAsFile = bool.Parse(ConfigurationManager.AppSettings["Email.WriteAsFile"] ?? "false") };
-            //  ninjectKernel.Bind<IOrderProcessor>().To<EmailOrderProcessor>().WithConstructorArgument("settings", emailSettings);
             ninjectKernel.Bind<IAccountService>().To<AccountService>();
             ninjectKernel.Bind<IFormsAuthenticationService>().To<FormsAuthenticationService>();
             ninjectKernel.Bind<IProductViewRepository>().To<ProductViewRepository>();
@@ -39,6 +37,7 @@ namespace Nigon.Web.Infrastructure
             ninjectKernel.Bind<IUserRepository>().To<UserRepository>();
             ninjectKernel.Bind<ISubCategoryRepository>().To<SubCategoryRepository>();
             ninjectKernel.Bind<IRateRepository>().To<RateRepository>();
+            ninjectKernel.Bind<IUserActivationRepository>().To<UserActivationRepository>();
         }
     }
 }

@@ -106,7 +106,6 @@
     <Content Include="Content\images\favicon.ico" />
     <Content Include="Content\images\loading.gif" />
     <Content Include="Content\img_for_gallery\0-38 marta.jpg" />
-    <Content Include="Content\img_for_gallery\09bd132e5a1fe72f8b258f7868hc.jpg" />
     <Content Include="Content\img_for_gallery\36-16picture %281%29.jpg" />
     <Content Include="Content\img_for_gallery\36-52picture %282%29.jpg" />
     <Content Include="Content\img_for_gallery\36-87picture.jpg" />
@@ -129,7 +128,6 @@
     <Content Include="Content\img_for_gallery\5.jpg" />
     <Content Include="Content\img_for_gallery\7-13c7f14-8_marta.jpg" />
     <Content Include="Content\img_for_gallery\7-96Yvdni-mrPYk.jpg" />
-    <Content Include="Content\img_for_gallery\8 marta.jpg" />
     <Content Include="Content\img_for_gallery\8-598March_big.png" />
     <Content Include="Content\img_for_gallery\blank.gif" />
     <Content Include="Content\img_for_gallery\fancybox_loading%402x.gif" />
@@ -187,6 +185,7 @@
     <Content Include="Scripts\additional-methods.min.js" />
     <Content Include="Scripts\Gallery\jquery.fancybox.js" />
     <Content Include="Scripts\Gallery\jquery.fancybox.pack.js" />
+    <None Include="Properties\PublishProfiles\FolderNigon.pubxml" />
     <None Include="Scripts\jquery-3.1.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.1.1.js" />
     <Content Include="Scripts\jquery-3.1.1.min.js" />
@@ -230,7 +229,6 @@
     <Compile Include="Models\AccountModels\ChangePasswordModel.cs" />
     <Compile Include="Models\AccountModels\LogOnViewModel.cs" />
     <Compile Include="Models\AccountModels\MyRoleProvider.cs" />
-    <Compile Include="Models\AccountProvider.cs" />
     <Compile Include="Models\PagingInfo.cs" />
     <Compile Include="Models\ProductsListViewModel.cs" />
     <Compile Include="Models\ProductViewModel.cs" />
@@ -258,6 +256,8 @@
     <Content Include="Views\Shared\SearchBarPartial.cshtml" />
     <Content Include="Scripts\jquery-3.1.1.min.map" />
     <Content Include="Scripts\jquery-3.1.1.slim.min.map" />
+    <Content Include="Views\Account\Activation.cshtml" />
+    <Content Include="Views\Account\ConfirmActivation.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

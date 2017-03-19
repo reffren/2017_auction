@@ -1,0 +1,46 @@
+﻿@model Nigon.Web.Models.ProductViewModel
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section css {
+    <link href="@Url.Content("~/Content/img_preview.css")" rel="stylesheet" type="text/css" />
+}
+<div id="DivBtnEdit">
+    <table id="btnEdit">
+        <tr>
+            <td><button type="button" onclick="location.href='@Url.Action("List", "Product")'">Возвратиться в главное меню</button></td>
+            <td>
+                @using (Html.BeginForm("Delete", "Seller", new { productId = @Model.Products.ProductID }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    <button type="submit">Удалить лот</button>
+                }
+            </td>
+        </tr>
+    </table>
+</div>
+@using (Html.BeginForm("Create", "Seller", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @ViewBag.Message
+    @Html.ValidationSummary()
+    @Html.Partial("CreateEditPartialTable")
+    @Html.HiddenFor(model => model.Products.ProductID)
+    @Html.HiddenFor(model => model.Products.ProductView.ProductViewID)
+    @Html.HiddenFor(model => model.Products.ImgPreview)
+    <div id="preview">
+        <ul class="gallery">
+            @if (Model.Products.ProductView.ImgProduct != null)
+            {
+                foreach (var p in Model.Products.ProductView.ImgProduct)
+                {
+                    Html.RenderPartial("ImgInEdit", p);
+                }
+            }
+        </ul>
+    </div>
+    @Html.HiddenFor(model => model.fileImg, new { id = "hiddenStateID" })
+}
+@Html.Partial("CreateLot")
+@section Scripts {
+    @Html.Partial("JSValidation")
+}

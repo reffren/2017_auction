@@ -90,6 +90,7 @@
     <Compile Include="Abstract\IRateRepository.cs" />
     <Compile Include="Abstract\IRoleRepository.cs" />
     <Compile Include="Abstract\ISubCategoryRepository.cs" />
+    <Compile Include="Abstract\IUserActivationRepository.cs" />
     <Compile Include="Abstract\IUserRepository.cs" />
     <Compile Include="Abstract\IUsersInRoleRepository.cs" />
     <Compile Include="Concrete\CategoryRepository.cs" />
@@ -100,6 +101,7 @@
     <Compile Include="Concrete\RateRepository.cs" />
     <Compile Include="Concrete\RoleRepository.cs" />
     <Compile Include="Concrete\SubCategoryRepository.cs" />
+    <Compile Include="Concrete\UserActivationRepository.cs" />
     <Compile Include="Concrete\UserRepository.cs" />
     <Compile Include="Concrete\UsersInRoleRepository.cs" />
     <Compile Include="Configuration\ProductConfiguration.cs" />
@@ -113,12 +115,23 @@
     <Compile Include="Entities\Role.cs" />
     <Compile Include="Entities\SubCategory.cs" />
     <Compile Include="Entities\User.cs" />
+    <Compile Include="Entities\UserActivation.cs" />
     <Compile Include="Entities\UsersInRole.cs" />
+    <Compile Include="Migrations\201703191711569_InitialCreate.cs" />
+    <Compile Include="Migrations\201703191711569_InitialCreate.Designer.cs">
+      <DependentUpon>201703191711569_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703191713080_AddUserActivation.cs" />
+    <Compile Include="Migrations\201703191713080_AddUserActivation.Designer.cs">
+      <DependentUpon>201703191713080_AddUserActivation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Web.config" />
     <Content Include="packages.config" />
+    <None Include="Properties\PublishProfiles\FolderNigon.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -126,7 +139,14 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201703191711569_InitialCreate.resx">
+      <DependentUpon>201703191711569_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703191713080_AddUserActivation.resx">
+      <DependentUpon>201703191713080_AddUserActivation.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

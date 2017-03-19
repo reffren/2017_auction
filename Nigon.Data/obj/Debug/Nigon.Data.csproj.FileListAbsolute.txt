@@ -1,4 +1,3 @@
-c:\users\tim\documents\visual studio 2013\Projects\Nigon\Nigon.Data\obj\Debug\Nigon.Data.csprojResolveAssemblyReference.cache
 C:\Users\Tim\Documents\Visual Studio 2013\Projects\Nigon\Nigon.Data\bin\Nigon.Data.dll.config
 C:\Users\Tim\Documents\Visual Studio 2013\Projects\Nigon\Nigon.Data\bin\Nigon.Data.dll
 C:\Users\Tim\Documents\Visual Studio 2013\Projects\Nigon\Nigon.Data\bin\Nigon.Data.pdb
@@ -26,3 +25,7 @@ C:\Users\Tim\Documents\Visual Studio 2013\Projects\Nigon\Nigon.Data\bin\ru\Syste
 C:\Users\Tim\Documents\Visual Studio 2013\Projects\Nigon\Nigon.Data\bin\ru\System.Web.Mvc.resources.dll
 C:\Users\Tim\Documents\Visual Studio 2013\Projects\Nigon\Nigon.Data\obj\Debug\Nigon.Data.dll
 C:\Users\Tim\Documents\Visual Studio 2013\Projects\Nigon\Nigon.Data\obj\Debug\Nigon.Data.pdb
+C:\Users\Tim\Documents\Visual Studio 2013\Projects\Nigon\Nigon.Data\obj\Debug\Nigon.Data.csprojResolveAssemblyReference.cache
+C:\Users\Tim\Documents\Visual Studio 2013\Projects\Nigon\Nigon.Data\obj\Debug\Nigon.Data.Migrations.InitialCreate.resources
+C:\Users\Tim\Documents\Visual Studio 2013\Projects\Nigon\Nigon.Data\obj\Debug\Nigon.Data.csproj.GenerateResource.Cache
+C:\Users\Tim\Documents\Visual Studio 2013\Projects\Nigon\Nigon.Data\obj\Debug\Nigon.Data.Migrations.AddUserActivation.resources

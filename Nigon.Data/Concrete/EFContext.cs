@@ -19,6 +19,7 @@ namespace Nigon.Data.Concrete
         public DbSet<ImgProduct> ImgProducts { get; set; }
         public DbSet<SubCategory> SubCategories { get; set; }
         public DbSet<Rate> Rates { get; set; }
+        public DbSet<UserActivation> UserActivations { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

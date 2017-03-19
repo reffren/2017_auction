@@ -42,6 +42,11 @@ namespace Nigon.Web
                 new { page = @"\d+" }
             );
 
+            routes.MapRoute(null,
+                "account/activation/{id}",
+                new { controller = "Account", action = "Activation", id = (string)null }
+            );
+
             routes.MapRoute(null, "{controller}/{action}");
             routes.LowercaseUrls = true;
         }

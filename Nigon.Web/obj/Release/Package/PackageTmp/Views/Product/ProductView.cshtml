@@ -1,0 +1,103 @@
+﻿@model Nigon.Web.Models.ProductViewModel
+
+@{
+    ViewBag.Title = "ProductView";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section css {
+    <link href="@Url.Content("~/Content/fancybox.css")" rel="stylesheet" type="text/css" />
+}
+<div class="productView">
+    <div class="productViewInfo">
+        <table id="tableView">
+            <caption>Основная информация по лоту</caption>
+            <tr>
+                <td class="tdRight">Название:</td>
+                <td>@Model.Products.Name</td>
+            </tr>
+            <tr>
+                <td class="tdRight">Описание:</td>
+                <td>@Model.Products.Description</td>
+            </tr>
+            <tr>
+                <td class="tdRight">Текущая цена:</td>
+                <td>@Model.Products.Price</td>
+            </tr>
+            <tr>
+                <td class="tdRight">Лидер:</td>
+                <td>@Model.Leader</td>
+            </tr>
+            <tr>
+                <td class="tdRight">Стартовая цена:</td>
+                <td>@Model.Products.ProductView.StartPrice</td>
+            </tr>
+            <tr>
+                <td class="tdRight">Шаг ставки:</td>
+                <td>@Model.Products.ProductView.StepPrice</td>
+            </tr>
+            <tr>
+                <td class="tdRight">Ставок:</td>
+                <td>@Model.Rate.RateCount</td>
+            </tr>
+            <tr>
+                <td class="tdRight">Осталось до конца торгов:</td>
+                <td id="timecountdown"></td>
+            </tr>
+            <tr>
+                <td class="tdRight">Начало торгов:</td>
+                <td>@Model.Products.ProductView.StartOfAuction.ToString("dd/MM/yyyy hh:mm")</td>
+            </tr>
+            <tr>
+                <td class="tdRight">Завершение торгов:</td>
+                <td>@Model.Products.ProductView.EndOfAuction.ToString("dd/MM/yyyy hh:mm")</td>
+            </tr>
+            <tr>
+                <td class="tdRight">Местоположение:</td>
+                <td>@Model.Products.ProductView.Location</td>
+            </tr>
+        </table>
+        <script type="text/javascript">var dt = '@Model.Products.ProductView.EndOfAuction.ToString("dd-MM-yyyy h:mm:ss tt")';</script>
+
+        @Scripts.Render("~/bundles/scriptsForGalleryFancyBox")
+        @Scripts.Render("~/bundles/galleryScript")
+
+        <ul class="gallery">
+            @foreach (var p in Model.Products.ProductView.ImgProduct)
+            {
+                <li>
+                    <a class="fancybox" rel="gallery1" href="@Url.Content(p.PathImg)" title="Twilight Memories (doraartem)">
+                        <img width="200" height="200" src="@Url.Content(p.PathImg)" alt=" " />
+                    </a>
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+
+<div class="assignRate">
+    @using (@Html.BeginForm("ProductView", "Product", FormMethod.Post, new { enctype = "multipart/form-data", name="formRate", onsubmit = "return validateSumRate();" }))
+    {
+        <label>Ставка: &#8381;</label>@Html.EditorFor(model => model.Rate.SumRate, new { @class = "rateField"})
+        @Html.HiddenFor(model => model.Rate.ProductID, new { Value = Model.Products.ProductID })
+        @Html.HiddenFor(model => model.Rate.RateCount)
+        @Html.HiddenFor(model => model.Rate.RateID)
+        <input type="submit" id="button" value="Сделать ставку" />
+        @ViewBag.Message
+    }
+</div>
+<script type="text/javascript">
+    function validateSumRate() {
+        var stepPriceValue = '@Model.Products.ProductView.StepPrice';
+        var sumRate = document.forms["formRate"]["Rate.SumRate"].value;
+        var rgexp = new RegExp("^-*[0-9,\.]+$");
+        if (!rgexp.test(sumRate)) {
+            alert("Вы ввели неверное число");
+            return false;
+        }
+        if (sumRate >= stepPriceValue)
+            return true;
+        else
+            alert("Ставка должна быть не меньше шага ставки");
+    }
+</script>
+@Scripts.Render("~/bundles/countDown")
