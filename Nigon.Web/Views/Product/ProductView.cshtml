@@ -75,13 +75,13 @@
 </div>
 
 <div class="assignRate">
-    @using (@Html.BeginForm("ProductView", "Product", FormMethod.Post, new { enctype = "multipart/form-data", name="formRate", onsubmit = "return validateSumRate();" }))
+    @using (@Html.BeginForm("ProductView", "Product", FormMethod.Post, new { onsubmit = "return validateSumRate();", enctype = "multipart/form-data", name="formRate" }))
     {
         <label>Ставка: &#8381;</label>@Html.EditorFor(model => model.Rate.SumRate, new { @class = "rateField"})
         @Html.HiddenFor(model => model.Rate.ProductID, new { Value = Model.Products.ProductID })
         @Html.HiddenFor(model => model.Rate.RateCount)
         @Html.HiddenFor(model => model.Rate.RateID)
-        <input type="submit" id="button" value="Сделать ставку" />
+    <input type="submit" id="button" value="Сделать ставку" />
         @ViewBag.Message
     }
 </div>
@@ -96,8 +96,10 @@
         }
         if (sumRate >= stepPriceValue)
             return true;
-        else
+        else {
             alert("Ставка должна быть не меньше шага ставки");
+            return false;
+        }
     }
 </script>
 @Scripts.Render("~/bundles/countDown")

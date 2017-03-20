@@ -171,7 +171,7 @@ namespace Nigon.Web.Controllers
                 SmtpClient smtp = new SmtpClient();
                 smtp.Host = "mail.nigon.ru";
                 smtp.EnableSsl = false;
-                NetworkCredential NetworkCred = new NetworkCredential("info@nigon.ru", "**********************");
+                NetworkCredential NetworkCred = new NetworkCredential("info@nigon.ru", "********************");
                 smtp.UseDefaultCredentials = true;
                 smtp.Credentials = NetworkCred;
                 smtp.Port = 587;

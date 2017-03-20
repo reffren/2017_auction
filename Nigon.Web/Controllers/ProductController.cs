@@ -78,15 +78,7 @@ namespace Nigon.Web.Controllers
                 return RedirectToAction("Account", "LogOn");
 
             prod.Rate.UserID = _repositoryUser.Users.Where(w => w.UserName == User.Identity.Name).Select(s => s.UserID).Single();
-
-            try
-            {
-                prod.Rate.RateCount = _repositoryRate.Rates.Where(w => w.ProductID == prod.Rate.ProductID).Select(s => s.RateCount).First() + 1;
-            }
-            catch
-            {
-                prod.Rate.RateCount = 1;
-            }
+            prod.Rate.RateCount = _repositoryRate.Rates.Where(w => w.ProductID == prod.Rate.ProductID).Select(s => s.RateCount).FirstOrDefault() + 1;
             _repositoryRate.SaveRate(prod.Rate);
 
             return RedirectToAction("ProductView", "Product", new { prod.Rate.ProductID });
