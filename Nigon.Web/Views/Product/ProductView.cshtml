@@ -85,19 +85,20 @@
         @ViewBag.Message
     }
 </div>
+<span id="message_error"></span>
 <script type="text/javascript">
     function validateSumRate() {
         var stepPriceValue = '@Model.Products.ProductView.StepPrice';
         var sumRate = document.forms["formRate"]["Rate.SumRate"].value;
         var rgexp = new RegExp("^-*[0-9,\.]+$");
         if (!rgexp.test(sumRate)) {
-            alert("Вы ввели неверное число");
+            document.getElementById("message_error").innerHTML = "Вы ввели неверное число";
             return false;
         }
         if (sumRate >= stepPriceValue)
             return true;
         else {
-            alert("Ставка должна быть не меньше шага ставки");
+            document.getElementById("message_error").innerHTML = "Ставка должна быть не меньше шага ставки";
             return false;
         }
     }
