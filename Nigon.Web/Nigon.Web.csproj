@@ -214,6 +214,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\NavController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
+    <Compile Include="Controllers\ProfileController.cs" />
     <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Controllers\SellerController.cs" />
     <Compile Include="Global.asax.cs">
@@ -226,12 +227,13 @@
     <Compile Include="Infrastructure\Concrete\FormsAuthenticationService.cs" />
     <Compile Include="Infrastructure\NinjectControllerFactory.cs" />
     <Compile Include="Models\AccountModels\AccountProvider.cs" />
-    <Compile Include="Models\AccountModels\ChangePasswordModel.cs" />
+    <Compile Include="Models\AccountModels\AccountModel.cs" />
     <Compile Include="Models\AccountModels\LogOnViewModel.cs" />
     <Compile Include="Models\AccountModels\MyRoleProvider.cs" />
     <Compile Include="Models\PagingInfo.cs" />
     <Compile Include="Models\ProductsListViewModel.cs" />
     <Compile Include="Models\ProductViewModel.cs" />
+    <Compile Include="Models\ProfileModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -258,6 +260,8 @@
     <Content Include="Scripts\jquery-3.1.1.slim.min.map" />
     <Content Include="Views\Account\Activation.cshtml" />
     <Content Include="Views\Account\ConfirmActivation.cshtml" />
+    <Content Include="Views\Account\ChangePassword.cshtml" />
+    <Content Include="Views\Account\ForgotPassword.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -268,7 +272,9 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Content\img_for_gallery\img_main_page\" />
+    <Folder Include="Views\Profile\" />
     <Folder Include="Views\Search\" />
+    <Folder Include="Views\User\" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

@@ -12,6 +12,13 @@ namespace Nigon.Data.Entities
         public int UserActivationID { get; set; }
         public int UserID { get; set; }
 
+        [MaxLength(50)]
+        public string UserName { get; set; }
+        [MaxLength(50)]
+        public string Password { get; set; }
+        [MaxLength(50)]
+        public string UserEmailAddress { get; set; }
+
         [MaxLength(100)]
         public string ActivationCode { get; set; }
     }

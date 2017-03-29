@@ -26,6 +26,21 @@ namespace Nigon.Web.Models.AccountModels
 
         public override bool ChangePassword(string username, string oldPassword, string newPassword)
         {
+
+            //var userObj = new User { UserName = username, Password = GetMd5Hash(newPassword), UserEmailAddress = email };
+            //using (var usersContext = new UserRepository())
+            //{
+            //    usersContext.AddUser(userObj);
+            //    var userInRole = usersContext.GetUser(username);  //copy UserID from Users to UsersInRoles
+            //    var getUserId = new UsersInRole { UserID = userInRole.UserID, RoleID = 1 }; //SET ROLEID MANUALLY
+            //    using (var usersInRolesContext = new UsersInRoleRepository())
+            //    {
+            //        usersInRolesContext.AddUsersInRoles(getUserId);
+            //    }
+            //}
+
+            //status = MembershipCreateStatus.Success;
+            //return GetUser(username, true);
             throw new NotImplementedException();
         }
 

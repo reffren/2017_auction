@@ -1,4 +1,5 @@
-﻿using Nigon.Data.Concrete;
+﻿using Nigon.Data.Abstract;
+using Nigon.Data.Concrete;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace Nigon.Web.Models.AccountModels
 {
     public class MyRoleProvider : RoleProvider
     {
+        //private IUserRepository _repositoryUser;
         public override bool IsUserInRole(string username, string roleName)
         {
             using (var usersContext = new EFContext())
@@ -65,10 +67,10 @@ namespace Nigon.Web.Models.AccountModels
 
         public override string[] GetAllRoles()
         {
-            using (var usersContext = new EFContext())
-            {
-                return usersContext.Roles.Select(r => r.RoleName).ToArray();
-            }
+            //using (var usersContext = new EFContext())
+            //{
+            //    return usersContext.Roles.Select(r => r.RoleName).ToArray();
+            //}
         }
 
         public override string[] FindUsersInRole(string roleName, string usernameToMatch)

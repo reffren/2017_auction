@@ -6,7 +6,7 @@ using System.Web;
 
 namespace Nigon.Web.Models.AccountModels
 {
-    public class ChangePasswordModel
+    public class AccountModel
     {
         [Required]
         [DataType(DataType.Password)]
@@ -61,5 +61,12 @@ namespace Nigon.Web.Models.AccountModels
         [Display(Name = "Повторите пароль")]
         [Compare("Password", ErrorMessage = "Пароль и подтверждение пароля не совпадают.")]
         public string ConfirmPassword { get; set; }
+    }
+
+    public class ForgotPassword
+    {
+        [Display(Name = "Электронная почта")]
+        [EmailAddress(ErrorMessage = "Введен некорректный e-mail")]
+        public string Email { get; set; }
     }
 }

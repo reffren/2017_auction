@@ -29,3 +29,4 @@ C:\Users\Tim\Documents\Visual Studio 2013\Projects\Nigon\Nigon.Data\obj\Debug\Ni
 C:\Users\Tim\Documents\Visual Studio 2013\Projects\Nigon\Nigon.Data\obj\Debug\Nigon.Data.Migrations.InitialCreate.resources
 C:\Users\Tim\Documents\Visual Studio 2013\Projects\Nigon\Nigon.Data\obj\Debug\Nigon.Data.csproj.GenerateResource.Cache
 C:\Users\Tim\Documents\Visual Studio 2013\Projects\Nigon\Nigon.Data\obj\Debug\Nigon.Data.Migrations.AddUserActivation.resources
+C:\Users\Tim\Documents\Visual Studio 2013\Projects\Nigon\Nigon.Data\obj\Debug\Nigon.Data.Migrations.Activation.resources

@@ -23,6 +23,8 @@ namespace Nigon.Web.Controllers
         private IUserActivationRepository _repositoryUserActivation;
         private IUserRepository _repositoryUser;
 
+        private UserActivation activation;
+
         public AccountController(IUserActivationRepository userActivation, IUserRepository user)
         {
             _repositoryUserActivation = userActivation;
@@ -96,35 +98,30 @@ namespace Nigon.Web.Controllers
             return RedirectToAction("List", "Product");
         }
 
-        //
-        // GET: /Account/Register
-
         public ActionResult Register()
         {
             return View();
         }
-
-        //
-        // POST: /Account/Register
 
         [HttpPost]
         public ActionResult Register(RegisterModel model)
         {
             if (ModelState.IsValid)
             {
-                // Attempt to register the user
-                var createStatus = MembershipService.CreateUser(model.UserName, model.Password, model.Email);
-
-                if (createStatus == MembershipCreateStatus.Success)
+                string activationCode = this.ActivationCode(); //get activation code
+                activation = new UserActivation()
                 {
-                    FormsService.SignIn(model.UserName, false /* createPersistentCookie */);
-                    SendActivationEmail(model.UserName, model.Email);
-                    return RedirectToAction("ConfirmActivation", "Account");
-                }
-                ModelState.AddModelError("", ErrorCodeToString(createStatus));
-            }
+                    UserName = model.UserName,
+                    UserEmailAddress = model.Email,
+                    Password = model.Password,
+                    ActivationCode = activationCode
+                };
 
-            // If we got this far, something failed, redisplay form
+                _repositoryUserActivation.SaveUserActivation(activation); //fill the temporary table
+                 
+                SendActivationEmail(model.UserName, model.Email, activationCode); //send activation email
+                return RedirectToAction("ConfirmActivation", "Account");
+            }
             return View(model);
         }
 
@@ -132,36 +129,40 @@ namespace Nigon.Web.Controllers
         {
             return View();
         }
-        public ActionResult Activation()
+        public ActionResult Activation() 
         {
-            ViewBag.Message = "Ошибка! Неверный код активации!";
-            if (RouteData.Values["id"] != null)
+            if (RouteData.Values["id"] != null) //get the activation code
             {
                 Guid activationCode = new Guid(RouteData.Values["id"].ToString());
-                UserActivation userActivation = _repositoryUserActivation.UserActivations.Where(p => p.ActivationCode == activationCode.ToString()).FirstOrDefault();
-                if (userActivation != null)
+                UserActivation userActivation = _repositoryUserActivation.UserActivations.FirstOrDefault(p => p.ActivationCode == activationCode.ToString());
+
+                if (userActivation.UserName != null) // create new user (register)
                 {
-                    _repositoryUserActivation.DeleteUserActivation(userActivation);
-                    return RedirectToAction("List", "Product");
+                    var createStatus = MembershipService.CreateUser(userActivation.UserName, userActivation.Password, userActivation.UserEmailAddress);
+
+                    if (createStatus == MembershipCreateStatus.Success)
+                    {
+                        _repositoryUserActivation.DeleteUserActivation(userActivation); //delete the temporary value in table
+                        FormsService.SignIn(userActivation.UserName, false /* createPersistentCookie */);
+                    }
+                    ModelState.AddModelError("", ErrorCodeToString(createStatus));
+                }
+                else //  when user forgot password we check email address and send him to profile for changing password
+                {
+                    string userName = _repositoryUser.Users.Where(w => w.UserID == userActivation.UserID).Select(s => s.UserName).SingleOrDefault();
+                    _repositoryUserActivation.DeleteUserActivation(userActivation); //delete the temporary value in table
+                    FormsService.SignIn(userName, false /* createPersistentCookie */);
                 }
             }
 
-            return View();
+            return RedirectToAction("List", "Product");
         }
-        private void SendActivationEmail(string userName, string userEmail)
+        private void SendActivationEmail(string userName, string userEmail, string activationCode)
         {
-            Guid activationCode = Guid.NewGuid();
-            UserActivation userActivation = new UserActivation()
-            {
-                UserID = _repositoryUser.Users.Where(f => f.UserName == userName).Select(s => s.UserID).Single(),
-                ActivationCode = activationCode.ToString(),
-            };
-
-            _repositoryUserActivation.SaveUserActivation(userActivation);
 
             using (MailMessage mm = new MailMessage("info@nigon.ru", userEmail))
             {
-                mm.Subject = "Account Activation";
+                mm.Subject = "Активация аккаунта";
                 string body = "Здравствуйте " + userName + ",";
                 body += "<br /><br />Пожалуйста, перейдите по этой ссылке для активации вашего аккаунта";
                 body += "<br /><a href = '" + string.Format("{0}://{1}/account/activation/{2}", Request.Url.Scheme, Request.Url.Authority, activationCode) + "'>Click here to activate your account.</a>";
@@ -171,7 +172,7 @@ namespace Nigon.Web.Controllers
                 SmtpClient smtp = new SmtpClient();
                 smtp.Host = "mail.nigon.ru";
                 smtp.EnableSsl = false;
-                NetworkCredential NetworkCred = new NetworkCredential("info@nigon.ru", "*************");
+                NetworkCredential NetworkCred = new NetworkCredential("info@nigon.ru", "******************");
                 smtp.UseDefaultCredentials = true;
                 smtp.Credentials = NetworkCred;
                 smtp.Port = 587;
@@ -179,8 +180,39 @@ namespace Nigon.Web.Controllers
             }
         }
 
-        //
-        // GET: /Account/ChangePassword
+        public ActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult ForgotPassword(ForgotPassword model)
+        {
+            if (ModelState.IsValid)
+            {
+                var UserData = _repositoryUser.Users.FirstOrDefault(f => f.UserEmailAddress == model.Email); //get email
+                if (UserData.UserEmailAddress != null)
+                {
+                    string activationCode = this.ActivationCode(); //get activation code
+                    activation = new UserActivation()
+                    {
+                        UserID = UserData.UserID,
+                        ActivationCode = activationCode
+                    };
+
+                    _repositoryUserActivation.SaveUserActivation(activation); //fill the temporary table
+                    this.SendActivationEmail(UserData.UserName, UserData.UserEmailAddress, activationCode); //send email for confirmation
+                    return RedirectToAction("ConfirmActivation", "Account");
+                }
+                else
+                {
+                    ViewBag.Message = "С указанным логином нет зарегистрированных пользователей!";
+                    return View();
+                }
+            }
+            ViewBag.Message = "Ошибка! Пожалуйста, перезагрузите страницу и повторите ввод данных";
+            return View();
+        }
 
         [Authorize]
         public ActionResult ChangePassword()
@@ -196,7 +228,7 @@ namespace Nigon.Web.Controllers
 
         [Authorize]
         [HttpPost]
-        public ActionResult ChangePassword(ChangePasswordModel model)
+        public ActionResult ChangePassword(AccountModel model)
         {
             if (ModelState.IsValid)
             {
@@ -274,5 +306,9 @@ namespace Nigon.Web.Controllers
         }
         #endregion
 
+        private string ActivationCode()
+        {
+            return Guid.NewGuid().ToString();
+        }
     }
 }

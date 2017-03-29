@@ -125,6 +125,10 @@
     <Compile Include="Migrations\201703191713080_AddUserActivation.Designer.cs">
       <DependentUpon>201703191713080_AddUserActivation.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201703270908082_Activation.cs" />
+    <Compile Include="Migrations\201703270908082_Activation.Designer.cs">
+      <DependentUpon>201703270908082_Activation.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -145,6 +149,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201703191713080_AddUserActivation.resx">
       <DependentUpon>201703191713080_AddUserActivation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703270908082_Activation.resx">
+      <DependentUpon>201703270908082_Activation.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
