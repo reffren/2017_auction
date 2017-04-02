@@ -1,0 +1,12 @@
+﻿
+@{
+    ViewBag.Title = "ConfirmEmail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    <p>
+        Ваш email успешно подтвержден. Теперь вы можете @Html.ActionLink("войти", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" }) на сайт, используя ваш логин и пароль!
+    </p>
+</div>
+

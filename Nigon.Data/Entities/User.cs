@@ -1,22 +1,16 @@
-﻿using System;
+﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace Nigon.Data.Entities
 {
-    public class User
+    public class User : IdentityUser
     {
-        [Key]
-        public int UserID { get; set; }
-
-        [MaxLength(50)]
-        public string UserName { get; set; }
-        [MaxLength(50)]
-        public string Password { get; set; }
-        [MaxLength(50)]
-        public string UserEmailAddress { get; set; }
-        public virtual ICollection<UsersInRole> UsersInRoles { get; set; }
     }
 }

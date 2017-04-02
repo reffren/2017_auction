@@ -59,7 +59,7 @@ namespace Nigon.Web.Controllers
             productViewModel.Products = _repositoryProducts.Products.FirstOrDefault(w => w.ProductID == productID);
             productViewModel.Rate = _repositoryRate.Rates.FirstOrDefault(f => f.ProductID == productViewModel.Products.ProductID);
             if (productViewModel.Rate != null)
-                productViewModel.Leader = _repositoryUser.Users.FirstOrDefault(f => f.UserID == productViewModel.Rate.UserID).UserName;
+                productViewModel.Leader = _repositoryUser.Users.FirstOrDefault(user => user.Id == productViewModel.Rate.UserID).UserName;
             if (productViewModel.Rate == null)
             {
                 productViewModel.Rate = new Rate();
@@ -74,13 +74,16 @@ namespace Nigon.Web.Controllers
         [Authorize]
         public ActionResult ProductView(ProductViewModel prod)
         {
-            if (User.Identity.Name == null)
-                return RedirectToAction("Account", "LogOn");
-
-            prod.Rate.UserID = _repositoryUser.Users.Where(w => w.UserName == User.Identity.Name).Select(s => s.UserID).Single();
-            prod.Rate.RateCount = _repositoryRate.Rates.Where(w => w.ProductID == prod.Rate.ProductID).Select(s => s.RateCount).FirstOrDefault() + 1;
-            _repositoryRate.SaveRate(prod.Rate);
-
+            if (ModelState.IsValid)
+            {
+                prod.Rate.UserID = _repositoryUser.Users.Where(w => w.UserName == User.Identity.Name).Select(user => user.Id).Single();
+                prod.Rate.RateCount = _repositoryRate.Rates.Where(w => w.ProductID == prod.Rate.ProductID).Select(s => s.RateCount).FirstOrDefault() + 1;
+                _repositoryRate.SaveRate(prod.Rate);
+            }
+            else
+            {
+                return View();
+            }
             return RedirectToAction("ProductView", "Product", new { prod.Rate.ProductID });
         }
     }

@@ -5,9 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using Nigon.Web.Infrastructure.Concrete;
-using Nigon.Web.Infrastructure.Abstract;
 using System.Web.Mvc;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using Nigon.Data.Entities;
 
 namespace Nigon.Web.Infrastructure
 {
@@ -29,15 +30,12 @@ namespace Nigon.Web.Infrastructure
         private void AddBindings()
         {
             ninjectKernel.Bind<IProductRepository>().To<ProductRepository>();
-            ninjectKernel.Bind<IAccountService>().To<AccountService>();
-            ninjectKernel.Bind<IFormsAuthenticationService>().To<FormsAuthenticationService>();
             ninjectKernel.Bind<IProductViewRepository>().To<ProductViewRepository>();
             ninjectKernel.Bind<IImgProductRepository>().To<ImgProductRepository>();
             ninjectKernel.Bind<ICategoryRepository>().To<CategoryRepository>();
             ninjectKernel.Bind<IUserRepository>().To<UserRepository>();
             ninjectKernel.Bind<ISubCategoryRepository>().To<SubCategoryRepository>();
             ninjectKernel.Bind<IRateRepository>().To<RateRepository>();
-            ninjectKernel.Bind<IUserActivationRepository>().To<UserActivationRepository>();
         }
     }
 }

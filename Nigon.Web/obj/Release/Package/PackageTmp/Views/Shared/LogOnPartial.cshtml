@@ -2,19 +2,26 @@
 {
     <table id="clientBarTable">
         <tr>
-            <td align="left">
-                Добро пожаловать <strong>@User.Identity.Name</strong>!
-                [ @Html.ActionLink("Выйти", "LogOff", "Account") ]
-            </td>
+            @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logout" }))
+            {
+                <td align="left">
+                    Добро пожаловать <strong>@User.Identity.Name</strong>!
+                    @Html.AntiForgeryToken()
+                    [<a href="javascript:document.getElementById('logout').submit()">Выйти</a>]
+
+                </td>
+            }
             <td align="right">
                 @Html.ActionLink("Создать лот", "Create", "Seller")
                 |
                 @Html.ActionLink("Мои лоты", "MyProducts", "Seller")
+                |
+                @Html.ActionLink("Личный кабинет", "UserProfile", "Profile")
             </td>
         </tr>
     </table>
 }
 else
 {
-    @:[ @Html.ActionLink("Войти", "LogOn", "Account") ]
+    @:[ @Html.ActionLink("Войти", "Login", "Account") ]
 }

@@ -9,9 +9,6 @@ namespace Nigon.Data.Abstract
 {
     public interface IUserRepository
     {
-        void AddUser(User user);
-        User GetUser(string userName);
-        User GetUser(string userName, string password);
         IQueryable<User> Users { get; }
     }
 }

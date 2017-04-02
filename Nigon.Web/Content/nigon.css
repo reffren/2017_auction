@@ -41,6 +41,9 @@ div#clientBar {
 div#clientBar #clientBarTable {
     width:100%;
 }
+#logout {
+    width: 10%;
+}
 
 /*searchBar*/
 

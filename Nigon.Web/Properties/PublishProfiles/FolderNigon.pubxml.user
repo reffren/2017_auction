@@ -18,6 +18,30 @@
     <File Include="bin/EntityFramework.SqlServer.dll">
       <publishTime>03/18/2017 13:18:00</publishTime>
     </File>
+    <File Include="bin/Microsoft.AspNet.Identity.Core.dll">
+      <publishTime>03/28/2017 14:47:42</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AspNet.Identity.EntityFramework.dll">
+      <publishTime>03/28/2017 14:47:50</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AspNet.Identity.Owin.dll">
+      <publishTime>03/28/2017 14:47:42</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Owin.dll">
+      <publishTime>03/28/2017 14:47:56</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Owin.Host.SystemWeb.dll">
+      <publishTime>03/28/2017 14:47:56</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Owin.Security.Cookies.dll">
+      <publishTime>03/28/2017 14:47:42</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Owin.Security.dll">
+      <publishTime>03/28/2017 14:47:42</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Owin.Security.OAuth.dll">
+      <publishTime>03/28/2017 14:47:42</publishTime>
+    </File>
     <File Include="bin/Microsoft.Web.Infrastructure.dll">
       <publishTime>03/18/2017 15:39:50</publishTime>
     </File>
@@ -25,13 +49,16 @@
       <publishTime>03/18/2017 15:26:20</publishTime>
     </File>
     <File Include="bin/Nigon.Data.dll">
-      <publishTime>03/19/2017 21:01:15</publishTime>
+      <publishTime>04/02/2017 14:40:00</publishTime>
     </File>
     <File Include="bin/Nigon.Web.dll">
-      <publishTime>03/19/2017 21:51:42</publishTime>
+      <publishTime>04/02/2017 17:54:04</publishTime>
     </File>
     <File Include="bin/Ninject.dll">
       <publishTime>03/18/2017 14:37:49</publishTime>
+    </File>
+    <File Include="bin/Owin.dll">
+      <publishTime>03/28/2017 14:47:42</publishTime>
     </File>
     <File Include="bin/ru/System.Web.Helpers.resources.dll">
       <publishTime>03/18/2017 13:15:38</publishTime>
@@ -181,7 +208,7 @@
       <publishTime>03/18/2017 15:32:13</publishTime>
     </File>
     <File Include="Content/nigon.css">
-      <publishTime>03/18/2017 15:32:13</publishTime>
+      <publishTime>03/28/2017 21:31:59</publishTime>
     </File>
     <File Include="Content/themes/base/accordion.css">
       <publishTime>03/18/2017 15:27:17</publishTime>
@@ -313,7 +340,7 @@
       <publishTime>03/18/2017 13:16:02</publishTime>
     </File>
     <File Include="packages.config">
-      <publishTime>03/18/2017 15:39:51</publishTime>
+      <publishTime>03/28/2017 14:48:20</publishTime>
     </File>
     <File Include="Scripts/additional-methods.js">
       <publishTime>03/19/2017 00:26:35</publishTime>
@@ -387,11 +414,32 @@
     <File Include="Views/Account/ConfirmActivation.cshtml">
       <publishTime>03/19/2017 21:51:00</publishTime>
     </File>
+    <File Include="Views/Account/ConfirmEmail.cshtml">
+      <publishTime>04/01/2017 12:40:05</publishTime>
+    </File>
+    <File Include="Views/Account/ForgotPassword.cshtml">
+      <publishTime>04/01/2017 12:04:23</publishTime>
+    </File>
+    <File Include="Views/Account/ForgotPasswordConfirmation.cshtml">
+      <publishTime>04/01/2017 12:04:23</publishTime>
+    </File>
+    <File Include="Views/Account/InfoConfirmEmail.cshtml">
+      <publishTime>04/01/2017 12:32:16</publishTime>
+    </File>
+    <File Include="Views/Account/Login.cshtml">
+      <publishTime>04/01/2017 12:04:23</publishTime>
+    </File>
     <File Include="Views/Account/LogOn.cshtml">
       <publishTime>03/19/2017 00:10:06</publishTime>
     </File>
     <File Include="Views/Account/Register.cshtml">
-      <publishTime>03/18/2017 15:19:33</publishTime>
+      <publishTime>04/01/2017 12:04:23</publishTime>
+    </File>
+    <File Include="Views/Account/ResetPassword.cshtml">
+      <publishTime>04/01/2017 12:04:23</publishTime>
+    </File>
+    <File Include="Views/Account/ResetPasswordConfirmation.cshtml">
+      <publishTime>04/01/2017 12:49:28</publishTime>
     </File>
     <File Include="Views/Nav/Menu.cshtml">
       <publishTime>03/18/2017 15:15:04</publishTime>
@@ -400,10 +448,10 @@
       <publishTime>03/18/2017 15:16:09</publishTime>
     </File>
     <File Include="Views/Product/ProductView.cshtml">
-      <publishTime>03/19/2017 15:39:52</publishTime>
+      <publishTime>03/21/2017 19:35:08</publishTime>
     </File>
     <File Include="Views/Seller/Create.cshtml">
-      <publishTime>03/18/2017 15:17:05</publishTime>
+      <publishTime>04/02/2017 14:26:15</publishTime>
     </File>
     <File Include="Views/Seller/Edit.cshtml">
       <publishTime>03/18/2017 15:17:26</publishTime>
@@ -427,7 +475,7 @@
       <publishTime>03/18/2017 15:23:03</publishTime>
     </File>
     <File Include="Views/Shared/LogOnPartial.cshtml">
-      <publishTime>03/18/2017 15:23:03</publishTime>
+      <publishTime>03/28/2017 21:39:19</publishTime>
     </File>
     <File Include="Views/Shared/Lots.cshtml">
       <publishTime>03/19/2017 01:57:56</publishTime>
@@ -445,7 +493,7 @@
       <publishTime>03/18/2017 15:14:40</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>03/19/2017 20:28:07</publishTime>
+      <publishTime>04/02/2017 14:40:01</publishTime>
     </File>
   </ItemGroup>
 </Project>

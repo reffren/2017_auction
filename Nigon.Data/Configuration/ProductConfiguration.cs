@@ -14,6 +14,7 @@ namespace Nigon.Data.Configuration
             HasKey(p => p.ProductID);
             Property(p => p.Name).HasMaxLength(150);
             Property(p => p.Description).HasMaxLength(500);
+            Property(p => p.UserID).HasMaxLength(128);
             Property(p => p.Price).HasPrecision(16, 2);
             Property(p => p.ImgPreview).HasMaxLength(150);
         }

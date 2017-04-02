@@ -41,6 +41,9 @@ div#clientBar {
 div#clientBar #clientBarTable {
     width:100%;
 }
+#logout {
+    width: 10%;
+}
 
 /*searchBar*/
 
@@ -180,7 +183,36 @@ ul.product h4 a {
     text-align:right;
     color: #895025;
 }
+div.productView {
+    width:90%;
+}
 
+div.productViewInfo {
+    float:left;
+    width:70%;
+}
+
+div.assignRate {
+    float: right;
+    margin-left: 1em;
+    margin-right: 1em;
+    margin-top:20px;
+    margin-bottom:10px;
+    width: 14%;
+    padding: 0.5em;
+    font-size: 1.2em;
+    border:1px solid #F1D29C;
+}
+
+div.assignRate > .rateField {
+    width: 5%;
+}
+span#message_error {
+    margin-right: 1em;
+    float:right;
+    width:15%;
+    color:red;
+}
 /*Галлерея фото продукта*/
 
 div#gallery span {
@@ -308,32 +340,6 @@ div.footer {
     width: 100%;
     clear: both;
     text-align:center;
-}
-
-/*ProductView*/
-
-div.productView {
-    width:90%;
-}
-
-div.productViewInfo {
-    float:left;
-    width:70%;
-}
-
-div.assignRate {
-    float: right;
-    margin-left: 1em;
-    margin-right: 1em;
-    margin-top:20px;
-    width: 14%;
-    padding: 0.5em;
-    font-size: 1.2em;
-    border:1px solid #F1D29C;
-}
-
-div.assignRate > .rateField {
-    width: 5%;
 }
 
 /*Edit*/

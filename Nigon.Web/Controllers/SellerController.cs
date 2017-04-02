@@ -39,54 +39,56 @@ namespace Nigon.Web.Controllers
 
         public ActionResult Create(ProductViewModel productModel)
         {
-            _repositoryProductView.SaveProductView(productModel.Products.ProductView); //saving or updating data
-            productModel.Products.ProductView = null; // exclude double record when we will saving products data
-
-            if (productModel.Products.ProductView == null)  //create a record
-                productModel.Products.ProductViewID = _repositoryProductView.ProductViews.OrderByDescending(p => p.ProductViewID).Select(s => s.ProductViewID).First();
-            else //update a record
-                productModel.Products.ProductViewID = productModel.Products.ProductView.ProductViewID;
-
-            int productViewId = productModel.Products.ProductViewID;
-
-            string filesImg = productModel.fileImg; //get names of images
-            if (filesImg != null && filesImg != "undefined")
+            if (ModelState.IsValid)
             {
-                string[] files = filesImg.Split('?'); // separate them
-                string imgMainPageName = files[0]; //get name of image for preview(first in array)
+                _repositoryProductView.SaveProductView(productModel.Products.ProductView); //save or update data
 
-                if (files != null && files.Count() < 8) // save names of images to the database(but no more than 8)
-                    try
-                    {
-                        foreach (var file in files)
+                int productViewId = productModel.Products.ProductView.ProductViewID; // get ProductViewID for photo name and
+                productModel.Products.ProductViewID = productViewId; //for initializing ProductViewID of Product Model
+                productModel.Products.ProductView = null; //after get ProductViewID we drop ProductView model that avoid double record in ProductView table when we will save productModel.Products
+
+                string filesImg = productModel.fileImg; //get names of images
+                if (filesImg != null && filesImg != "undefined")
+                {
+                    string[] files = filesImg.Split('?'); // separate them
+                    string imgMainPageName = files[0]; //get name of image for preview(first in array)
+
+                    if (files != null && files.Count() < 8) // save names of images to the database(but no more than 8)
+                        try
                         {
-                            nameOfPhoto += file;
-
-                            ImgProduct imgProduct = new ImgProduct
+                            foreach (var file in files)
                             {
-                                PathImg = RenameFiles(nameOfPhoto, productViewId), //pass current name of image and id of ProductView to method RenameFiles (rename the file and add "id" in name of file)
-                                ProductViewID = productViewId
-                            };
-                            _repositoryImgProducts.SaveImage(imgProduct); // save name of image in database
-                            nameOfPhoto = "";
+                                nameOfPhoto += file;
+
+                                ImgProduct imgProduct = new ImgProduct
+                                {
+                                    PathImg = RenameFiles(nameOfPhoto, productViewId), //pass current name of image and id of ProductView to method RenameFiles (rename the file and add "id" in name of file)
+                                    ProductViewID = productViewId
+                                };
+                                _repositoryImgProducts.SaveImage(imgProduct); // save name of image in database
+                                nameOfPhoto = "";
+                            }
                         }
-                    }
-                    catch (Exception ex)
+                        catch (Exception ex)
+                        {
+                            ViewBag.Message = "Ошибка:" + ex.Message.ToString();
+                            return View();
+                        }
+                    else
                     {
-                        ViewBag.Message = "Ошибка:" + ex.Message.ToString();
+                        ViewBag.Message = "Вы загрузили неверный формат файла.";
                         return View();
                     }
-                else
-                {
-                    ViewBag.Message = "Вы загрузили неверный формат файла.";
-                    return View();
+                    productModel.Products.ImgPreview = RenameFiles(imgMainPageName, productViewId, "img_main_page"); //save the image of lot for main page, send to method name of file, "id" of ProductView and name of folder for preview image
                 }
-                productModel.Products.ImgPreview = RenameFiles(imgMainPageName, productViewId, "img_main_page"); //save the image of lot for main page, send to method name of file, "id" of ProductView and name of folder for preview image
+                productModel.Products.UserID = _repositoryUser.Users.Where(w => w.UserName == User.Identity.Name).Select(s => s.Id).Single();
+
+                _repositoryProducts.SaveProduct(productModel.Products);
             }
-
-            productModel.Products.UserID = _repositoryUser.Users.Where(w => w.UserName == User.Identity.Name).Select(s => s.UserID).Single();
-
-            _repositoryProducts.SaveProduct(productModel.Products);
+            else
+            {
+                return View();
+            }
 
             return RedirectToAction("ProductView", "Product", new { productModel.Products.ProductID });
         }
@@ -118,7 +120,7 @@ namespace Nigon.Web.Controllers
 
         public ViewResult MyProducts()
         {
-            var product = _repositoryProducts.Products.Where(w => w.User.UserName == User.Identity.Name).ToList();
+            var product = _repositoryProducts.Products.ToList();
 
             return View(product);
         }

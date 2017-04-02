@@ -1,7 +1,6 @@
-﻿@model Nigon.Web.Models.AccountModels.RegisterModel
-
+﻿@model Nigon.Web.Models.RegisterViewModel
 @{
-    ViewBag.Title = "Register";
+    ViewBag.Title = "Регистрация";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -14,8 +13,9 @@
     Пароль должен содержать как минимум @Membership.MinRequiredPasswordLength букв.
 </p>
 
-@using (Html.BeginForm("Register", "Account", FormMethod.Post))
+@using (Html.BeginForm("Register", "Account", FormMethod.Post, new { role = "form" }))
 {
+    @Html.AntiForgeryToken()
     @Html.ValidationSummary(true, "Произошла ошибка. Пожалуйста проверьте введеные данные и попробуйте снова.")
     <div>
         <fieldset>

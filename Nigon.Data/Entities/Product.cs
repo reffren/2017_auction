@@ -23,7 +23,7 @@ namespace Nigon.Data.Entities
         [Range(typeof(decimal), "5,0", "9999999", ErrorMessage = "Наименьшая цена - 5 рублей, в качестве разделителя дробной и целой части используется запятая")]
         public decimal Price { get; set; }
         public string ImgPreview { get; set; }
-        public int UserID { get; set; }
+        public string UserID { get; set; }
         public virtual User User { get; set; }
         public int ProductViewID { get; set; }
         public virtual ProductView ProductView { get; set; }

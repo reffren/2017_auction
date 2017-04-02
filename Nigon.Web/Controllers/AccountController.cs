@@ -1,314 +1,321 @@
-﻿using Nigon.Data.Abstract;
+﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin.Security;
+using Microsoft.Owin.Security.DataProtection;
+using Nigon.Data.Concrete;
 using Nigon.Data.Entities;
-using Nigon.Web.Infrastructure;
-using Nigon.Web.Infrastructure.Abstract;
-using Nigon.Web.Infrastructure.Concrete;
-using Nigon.Web.Models.AccountModels;
+using Nigon.Web.Identity;
+using Nigon.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Mail;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using System.Web.Routing;
-using System.Web.Security;
 
 namespace Nigon.Web.Controllers
 {
     public class AccountController : Controller
     {
-        private IFormsAuthenticationService FormsService { get; set; }
-        private IAccountService MembershipService { get; set; }
-        private IUserActivationRepository _repositoryUserActivation;
-        private IUserRepository _repositoryUser;
-
-        private UserActivation activation;
-
-        public AccountController(IUserActivationRepository userActivation, IUserRepository user)
+        string errorMessage = "";
+        public AccountController()
+            : this(new UserManager<User>(new UserStore<User>(new EFContext())))
         {
-            _repositoryUserActivation = userActivation;
-            _repositoryUser = user;
         }
 
-        protected override void Initialize(RequestContext requestContext)
+        public AccountController(UserManager<User> userManager)
         {
-            if (FormsService == null) { FormsService = new FormsAuthenticationService(); }
-            if (MembershipService == null) { MembershipService = new AccountService(); }
-
-            base.Initialize(requestContext);
+            UserManager = userManager;
+            Token();
         }
+
+        public void Token()
+        {
+            var provider = new MachineKeyProtectionProvider();
+            UserManager.UserTokenProvider = new DataProtectorTokenProvider<User>(provider.Create("ASP.NET Identity"));
+        }
+        public UserManager<User> UserManager { get; private set; }
 
         //
-        // GET: /Account/LogOn
-
-        public ActionResult LogOn()
+        // GET: /Account/Login
+        [AllowAnonymous]
+        public ActionResult Login(string returnUrl)
         {
+            ViewBag.ReturnUrl = returnUrl;
             return View();
         }
 
         //
-        // POST: /Account/LogOn
-
+        // POST: /Account/Login
         [HttpPost]
-        public ActionResult LogOn(LogOnModel model, string returnUrl)
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {
             if (ModelState.IsValid)
             {
-                if (MembershipService.ValidateUser(model.UserName, model.Password))
+                var user = await UserManager.FindAsync(model.UserName, model.Password);
+                if (user != null)
                 {
-                    FormsService.SignIn(model.UserName, model.RememberMe);
-                    if (Url.IsLocalUrl(returnUrl) && returnUrl.Length > 1 && returnUrl.StartsWith("/")
-                        && !returnUrl.StartsWith("//") && !returnUrl.StartsWith("/\\"))
-                    {
-                        return Redirect(returnUrl ?? Url.Action("List", "Product"));
-                    }
-                    return RedirectToAction("RedirectToDefault");
+                    await SignInAsync(user, model.RememberMe);
+                    return RedirectToLocal(returnUrl);
                 }
-                ModelState.AddModelError("", "Неверно введены Имя пользователя или Пароль.");
+                else
+                {
+                    ModelState.AddModelError("", "Неккоректное имя пользователя или e-mail.");
+                }
             }
 
-            // If we got this far, something failed, redisplay form
             return View(model);
         }
 
         //
-        // GET: /Account/LogOff
-        public ActionResult RedirectToDefault()
-        {
-
-            String[] roles = Roles.GetRolesForUser();
-            if (roles.Contains("Administrator"))
-            {
-                return RedirectToAction("Index", "Admin");
-            }
-            else if (roles.Contains("User"))
-            {
-                return RedirectToAction("List", "Product");
-            }
-            else
-            {
-                return RedirectToAction("Index");
-            }
-        }
+        // POST: /Account/LogOff
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult LogOff()
         {
-            FormsAuthentication.SignOut();
-
+            AuthenticationManager.SignOut();
             return RedirectToAction("List", "Product");
         }
 
+        //
+        // GET: /Account/Register
+        [AllowAnonymous]
         public ActionResult Register()
         {
             return View();
         }
 
+        //
+        // POST: /Account/Register
         [HttpPost]
-        public ActionResult Register(RegisterModel model)
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Register(RegisterViewModel model)
         {
             if (ModelState.IsValid)
             {
-                string activationCode = this.ActivationCode(); //get activation code
-                activation = new UserActivation()
+                var user = new User()
                 {
                     UserName = model.UserName,
-                    UserEmailAddress = model.Email,
-                    Password = model.Password,
-                    ActivationCode = activationCode
+                    Email = model.Email,
                 };
+                var emailResult = await UserManager.FindByEmailAsync(model.Email); //check email
+                var result = await UserManager.CreateAsync(user, model.Password);
+                if (!result.Succeeded)
+                {
+                    errorMessage = "Пользователь с таким именем уже существует";
+                }
+                else if (emailResult != null)
+                {
+                    errorMessage = "Пользователь с таким email уже существует";
+                }
 
-                _repositoryUserActivation.SaveUserActivation(activation); //fill the temporary table
-                 
-                SendActivationEmail(model.UserName, model.Email, activationCode); //send activation email
-                return RedirectToAction("ConfirmActivation", "Account");
+                if (result.Succeeded && emailResult == null)
+                {
+                    string emailConfirmationCode = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id); //generate token for email
+                    var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = emailConfirmationCode }, protocol: Request.Url.Scheme);
+                    string sFormat = string.Format("Здравствуйте {0}!<BR/>Благодарим Вас за регистрацию, пожалуйста перейдите по <a href=\"{1}\" title=\"Регистрация в Интернет-аукционе Nigon.ru\">ссылке</a>, чтобы завершить вашу решистрацию.<br/><br/> Если вы не отправляли запрос на восстановление пароля, просто проигнорируйте это письмо.<br/><br/> Это письмо сформировано автоматически, не отвечайте на него. С уважением, Интернет-аукцион Nigon.ru", user.UserName, callbackUrl);
+                    string email = user.Email;
+                    string subject = "Регистрация в Интернет-аукционе Nigon.ru";
+                    SendEmail(sFormat, email, subject);
+
+                    return RedirectToAction("InfoConfirmEmail", "Account", new { Email = user.Email });
+                }
+                else
+                {
+                    AddErrors(errorMessage);
+                }
             }
             return View(model);
         }
 
-        public ActionResult ConfirmActivation()
+        public ActionResult InfoConfirmEmail()
         {
             return View();
         }
-        public ActionResult Activation() 
+
+        // GET: /Account/ConfirmEmail
+        [AllowAnonymous]
+        public async Task<ActionResult> ConfirmEmail(string userId, string code)
         {
-            if (RouteData.Values["id"] != null) //get the activation code
+            if (userId == null || code == null)
             {
-                Guid activationCode = new Guid(RouteData.Values["id"].ToString());
-                UserActivation userActivation = _repositoryUserActivation.UserActivations.FirstOrDefault(p => p.ActivationCode == activationCode.ToString());
-
-                if (userActivation.UserName != null) // create new user (register)
-                {
-                    var createStatus = MembershipService.CreateUser(userActivation.UserName, userActivation.Password, userActivation.UserEmailAddress);
-
-                    if (createStatus == MembershipCreateStatus.Success)
-                    {
-                        _repositoryUserActivation.DeleteUserActivation(userActivation); //delete the temporary value in table
-                        FormsService.SignIn(userActivation.UserName, false /* createPersistentCookie */);
-                    }
-                    ModelState.AddModelError("", ErrorCodeToString(createStatus));
-                }
-                else //  when user forgot password we check email address and send him to profile for changing password
-                {
-                    string userName = _repositoryUser.Users.Where(w => w.UserID == userActivation.UserID).Select(s => s.UserName).SingleOrDefault();
-                    _repositoryUserActivation.DeleteUserActivation(userActivation); //delete the temporary value in table
-                    FormsService.SignIn(userName, false /* createPersistentCookie */);
-                }
+                return View("Error");
             }
-
-            return RedirectToAction("List", "Product");
-        }
-        private void SendActivationEmail(string userName, string userEmail, string activationCode)
-        {
-
-            using (MailMessage mm = new MailMessage("info@nigon.ru", userEmail))
-            {
-                mm.Subject = "Активация аккаунта";
-                string body = "Здравствуйте " + userName + ",";
-                body += "<br /><br />Пожалуйста, перейдите по этой ссылке для активации вашего аккаунта";
-                body += "<br /><a href = '" + string.Format("{0}://{1}/account/activation/{2}", Request.Url.Scheme, Request.Url.Authority, activationCode) + "'>Click here to activate your account.</a>";
-                body += "<br /><br />С уважением, nigon.ru";
-                mm.Body = body;
-                mm.IsBodyHtml = true;
-                SmtpClient smtp = new SmtpClient();
-                smtp.Host = "mail.nigon.ru";
-                smtp.EnableSsl = false;
-                NetworkCredential NetworkCred = new NetworkCredential("info@nigon.ru", "******************");
-                smtp.UseDefaultCredentials = true;
-                smtp.Credentials = NetworkCred;
-                smtp.Port = 587;
-                smtp.Send(mm);
-            }
+            var result = await UserManager.ConfirmEmailAsync(userId, code);
+            return View(result.Succeeded ? "ConfirmEmail" : "Error");
         }
 
+
+
+        [AllowAnonymous]
         public ActionResult ForgotPassword()
         {
             return View();
         }
 
-        [HttpPost]
-        public ActionResult ForgotPassword(ForgotPassword model)
-        {
-            if (ModelState.IsValid)
-            {
-                var UserData = _repositoryUser.Users.FirstOrDefault(f => f.UserEmailAddress == model.Email); //get email
-                if (UserData.UserEmailAddress != null)
-                {
-                    string activationCode = this.ActivationCode(); //get activation code
-                    activation = new UserActivation()
-                    {
-                        UserID = UserData.UserID,
-                        ActivationCode = activationCode
-                    };
-
-                    _repositoryUserActivation.SaveUserActivation(activation); //fill the temporary table
-                    this.SendActivationEmail(UserData.UserName, UserData.UserEmailAddress, activationCode); //send email for confirmation
-                    return RedirectToAction("ConfirmActivation", "Account");
-                }
-                else
-                {
-                    ViewBag.Message = "С указанным логином нет зарегистрированных пользователей!";
-                    return View();
-                }
-            }
-            ViewBag.Message = "Ошибка! Пожалуйста, перезагрузите страницу и повторите ввод данных";
-            return View();
-        }
-
-        [Authorize]
-        public ActionResult ChangePassword()
-        {
-            return View();
-        }
-
-        // ChangePassword method not implemented in CustomMembershipProvider.cs
-        // Feel free to update!
-
         //
-        // POST: /Account/ChangePassword
-
-        [Authorize]
+        // POST: /Account/ForgotPassword
         [HttpPost]
-        public ActionResult ChangePassword(AccountModel model)
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ForgotPassword(ForgotPasswordViewModel model)
         {
             if (ModelState.IsValid)
             {
+                var user = await this.UserManager.FindByEmailAsync(model.Email);
 
-                // ChangePassword will throw an exception rather
-                // than return false in certain failure scenarios.
-                bool changePasswordSucceeded;
-                try
+                if (user == null || !(await UserManager.IsEmailConfirmedAsync(user.Id)))
                 {
-                    MembershipUser currentUser = Membership.GetUser(User.Identity.Name, true /* userIsOnline */);
-                    changePasswordSucceeded = currentUser.ChangePassword(model.OldPassword, model.NewPassword);
-                }
-                catch (Exception)
-                {
-                    changePasswordSucceeded = false;
+                    return View("ForgotPasswordConfirmation");
                 }
 
-                if (changePasswordSucceeded)
-                {
-                    return RedirectToAction("ChangePasswordSuccess");
-                }
-                else
-                {
-                    ModelState.AddModelError("", "The current password is incorrect or the new password is invalid.");
-                }
+                string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id); //generate token for reset password
+                var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+
+                TempData["ViewBagLink"] = callbackUrl;
+                string sFormat = string.Format("Здравствуйте {0}!<br/>Это письмо было выслано в ответ на запрос восстановления пароля в интернет-аукционе Nigon.ru. Для восстановления пароля перейдите по <a href=\"{1}\" title=\"Запрос на смену пароля\">ссылке</a> и следуйте инструкциям.<br/><br/> Если вы не отправляли запрос на восстановление пароля, просто проигнорируйте это письмо.<br/><br/> Это письмо сформировано автоматически, не отвечайте на него. С уважением, Интернет-аукцион Nigon.ru", user.UserName, callbackUrl);
+                string email = user.Email;
+                string subject = "Запрос на смену пароля в интернет-аукционе Nigon.ru";
+                SendEmail(sFormat, email, subject);
+                return RedirectToAction("ForgotPasswordConfirmation", "Account");
             }
 
             // If we got this far, something failed, redisplay form
             return View(model);
         }
 
-        //
-        // GET: /Account/ChangePasswordSuccess
+        // GET: /Account/ForgotPasswordConfirmation
+        [AllowAnonymous]
+        public ActionResult ForgotPasswordConfirmation()
+        {
+            ViewBag.Link = TempData["ViewBagLink"];
+            return View();
+        }
 
-        public ActionResult ChangePasswordSuccess()
+        //
+        // GET: /Account/ResetPassword
+        [AllowAnonymous]
+        public ActionResult ResetPassword(string code)
+        {
+            return code == null ? View("Error") : View();
+        }
+
+        //
+        // POST: /Account/ResetPassword
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await UserManager.FindByEmailAsync(model.Email);
+
+            if (user == null)
+            {
+                return RedirectToAction("ResetPasswordConfirmation", "Account");
+            }
+
+            var result = await UserManager.ResetPasswordAsync(user.Id, model.Code, model.Password);
+            if (result.Succeeded)
+            {
+                return RedirectToAction("ResetPasswordConfirmation", "Account");
+            }
+            else
+            {
+                errorMessage = "Ошибка! Пожалуйста проверьте правильность введенных данных";
+            }
+            AddErrors(errorMessage);
+            return View();
+        }
+
+        //
+        // GET: /Account/ResetPasswordConfirmation
+        [AllowAnonymous]
+        public ActionResult ResetPasswordConfirmation()
         {
             return View();
         }
 
-        #region Status Codes
-        private static string ErrorCodeToString(MembershipCreateStatus createStatus)
+        public void SendEmail(string sFormat, string Email, string subject)
         {
-            switch (createStatus)
+            System.Net.Mail.MailMessage m = new System.Net.Mail.MailMessage(new System.Net.Mail.MailAddress("info@nigon.ru", "Интернет-аукцион Nigon.ru"), new System.Net.Mail.MailAddress(Email));
+            m.Subject = subject;
+            m.Body = sFormat;
+            m.IsBodyHtml = true;
+            System.Net.Mail.SmtpClient smtp = new System.Net.Mail.SmtpClient("mail.nigon.ru");
+            smtp.Credentials = new System.Net.NetworkCredential("info@nigon.ru", "******************");
+            smtp.EnableSsl = false;
+            smtp.Send(m);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && UserManager != null)
             {
-                case MembershipCreateStatus.DuplicateUserName:
-                    return "Имя пользователя уже существует. Пожалуйста введите другое имя.";
+                UserManager.Dispose();
+                UserManager = null;
+            }
+            base.Dispose(disposing);
+        }
 
-                case MembershipCreateStatus.DuplicateEmail:
-                    return "Данный e-mail уже существует. Пожалуйста, введите другой e-mail адрес.";
-
-                case MembershipCreateStatus.InvalidPassword:
-                    return "Пароль введен неверно. Пожалуйста, проверьте правильность введеного вами пароля.";
-
-                case MembershipCreateStatus.InvalidEmail:
-                    return "e-mail введен неверно. Пожалуйста, проверьте правильность введеного вами e-mail адреса.";
-
-                case MembershipCreateStatus.InvalidAnswer:
-                    return "Ответ на вопрос введен неверно. Пожалуйста, проверьте правильность введеного вами ответа на вопрос.";
-
-                case MembershipCreateStatus.InvalidQuestion:
-                    return "Вопрос введен неверно. Пожалуйста, проверьте правильность введеного вами вопроса.";
-
-                case MembershipCreateStatus.InvalidUserName:
-                    return "Имя пользователя введено неверно. Пожалуйста, проверьте правильность введеного вами вопроса.";
-
-                case MembershipCreateStatus.ProviderError:
-                    return "Произошла ошибка. Пожалуйста, проверьте ваши данные. Если проблема повторяется, пожалуйста обратитесь к администратору.";
-
-                case MembershipCreateStatus.UserRejected:
-                    return "Запрос отменен. Пожалуйста, проверьте ваши данные. Если проблема повторяется, пожалуйста обратитесь к администратору.";
-
-                default:
-                    return "Произошла необработанная ошибка. Пожалуйста, проверьте ваши данные. Если проблема повторяется, пожалуйста обратитесь к администратору.";
+        private IAuthenticationManager AuthenticationManager
+        {
+            get
+            {
+                return HttpContext.GetOwinContext().Authentication;
             }
         }
-        #endregion
 
-        private string ActivationCode()
+        private async Task SignInAsync(User user, bool isPersistent)
         {
-            return Guid.NewGuid().ToString();
+            AuthenticationManager.SignOut(DefaultAuthenticationTypes.ExternalCookie);
+            var identity = await UserManager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);
+            AuthenticationManager.SignIn(new AuthenticationProperties() { IsPersistent = isPersistent }, identity);
+        }
+
+        private void AddErrors(string error)
+        {
+            ModelState.AddModelError("", error);
+        }
+
+        private ActionResult RedirectToLocal(string returnUrl)
+        {
+            if (Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
+            else
+            {
+                return RedirectToAction("List", "Product");
+            }
+        }
+
+        private class ChallengeResult : HttpUnauthorizedResult
+        {
+            public ChallengeResult(string provider, string redirectUri)
+                : this(provider, redirectUri, null)
+            {
+            }
+
+            public ChallengeResult(string provider, string redirectUri, string userId)
+            {
+                LoginProvider = provider;
+                RedirectUri = redirectUri;
+                UserId = userId;
+            }
+
+            public string LoginProvider { get; set; }
+            public string RedirectUri { get; set; }
+            public string UserId { get; set; }
+
         }
     }
 }
