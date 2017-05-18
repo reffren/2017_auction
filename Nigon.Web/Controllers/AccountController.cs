@@ -251,7 +251,7 @@ namespace Nigon.Web.Controllers
             m.Body = sFormat;
             m.IsBodyHtml = true;
             System.Net.Mail.SmtpClient smtp = new System.Net.Mail.SmtpClient("mail.nigon.ru");
-            smtp.Credentials = new System.Net.NetworkCredential("info@nigon.ru", "******************");
+            smtp.Credentials = new System.Net.NetworkCredential("info@nigon.ru", "@Megsibudgicgepos33");
             smtp.EnableSsl = false;
             smtp.Send(m);
         }

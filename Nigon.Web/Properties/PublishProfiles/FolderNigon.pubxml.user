@@ -52,7 +52,7 @@
       <publishTime>04/02/2017 14:40:00</publishTime>
     </File>
     <File Include="bin/Nigon.Web.dll">
-      <publishTime>04/02/2017 17:54:04</publishTime>
+      <publishTime>05/14/2017 17:06:27</publishTime>
     </File>
     <File Include="bin/Ninject.dll">
       <publishTime>03/18/2017 14:37:49</publishTime>
@@ -493,7 +493,7 @@
       <publishTime>03/18/2017 15:14:40</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>04/02/2017 14:40:01</publishTime>
+      <publishTime>05/14/2017 17:06:27</publishTime>
     </File>
   </ItemGroup>
 </Project>

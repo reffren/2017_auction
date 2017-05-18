@@ -6,6 +6,7 @@ using System.Web.Mvc;
 
 namespace Nigon.Web.Controllers
 {
+    [Authorize]
     public class ProfileController : Controller
     {
         //private IU

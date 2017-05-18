@@ -12,6 +12,7 @@ using System.Web.Mvc;
 
 namespace Nigon.Web.Controllers
 {
+    [Authorize]
     public class SellerController : Controller
     {
         private IProductRepository _repositoryProducts;
@@ -118,6 +119,7 @@ namespace Nigon.Web.Controllers
             return View(productModel);
         }
 
+        [Authorize]
         public ViewResult MyProducts()
         {
             var product = _repositoryProducts.Products.ToList();

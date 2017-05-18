@@ -95,3 +95,20 @@ C:\Users\Tim\Desktop\Nigon\Nigon.Web\bin\ru\System.Web.Mvc.resources.dll
 C:\Users\Tim\Desktop\Nigon\Nigon.Web\obj\Release\Nigon.Web.csprojResolveAssemblyReference.cache
 C:\Users\Tim\Desktop\Nigon\Nigon.Web\obj\Release\Nigon.Web.dll
 C:\Users\Tim\Desktop\Nigon\Nigon.Web\obj\Release\Nigon.Web.pdb
+C:\Users\Tim\Documents\Visual Studio 2013\Projects\Nigon\Nigon.Web\bin\Microsoft.AspNet.Identity.Core.dll
+C:\Users\Tim\Documents\Visual Studio 2013\Projects\Nigon\Nigon.Web\bin\Microsoft.AspNet.Identity.EntityFramework.dll
+C:\Users\Tim\Documents\Visual Studio 2013\Projects\Nigon\Nigon.Web\bin\Microsoft.AspNet.Identity.Owin.dll
+C:\Users\Tim\Documents\Visual Studio 2013\Projects\Nigon\Nigon.Web\bin\Microsoft.Owin.dll
+C:\Users\Tim\Documents\Visual Studio 2013\Projects\Nigon\Nigon.Web\bin\Microsoft.Owin.Host.SystemWeb.dll
+C:\Users\Tim\Documents\Visual Studio 2013\Projects\Nigon\Nigon.Web\bin\Microsoft.Owin.Security.Cookies.dll
+C:\Users\Tim\Documents\Visual Studio 2013\Projects\Nigon\Nigon.Web\bin\Microsoft.Owin.Security.dll
+C:\Users\Tim\Documents\Visual Studio 2013\Projects\Nigon\Nigon.Web\bin\Microsoft.Owin.Security.OAuth.dll
+C:\Users\Tim\Documents\Visual Studio 2013\Projects\Nigon\Nigon.Web\bin\Owin.dll
+C:\Users\Tim\Documents\Visual Studio 2013\Projects\Nigon\Nigon.Web\bin\Microsoft.AspNet.Identity.Core.xml
+C:\Users\Tim\Documents\Visual Studio 2013\Projects\Nigon\Nigon.Web\bin\Microsoft.AspNet.Identity.EntityFramework.xml
+C:\Users\Tim\Documents\Visual Studio 2013\Projects\Nigon\Nigon.Web\bin\Microsoft.AspNet.Identity.Owin.xml
+C:\Users\Tim\Documents\Visual Studio 2013\Projects\Nigon\Nigon.Web\bin\Microsoft.Owin.xml
+C:\Users\Tim\Documents\Visual Studio 2013\Projects\Nigon\Nigon.Web\bin\Microsoft.Owin.Host.SystemWeb.xml
+C:\Users\Tim\Documents\Visual Studio 2013\Projects\Nigon\Nigon.Web\bin\Microsoft.Owin.Security.xml
+C:\Users\Tim\Documents\Visual Studio 2013\Projects\Nigon\Nigon.Web\bin\Microsoft.Owin.Security.Cookies.xml
+C:\Users\Tim\Documents\Visual Studio 2013\Projects\Nigon\Nigon.Web\bin\Microsoft.Owin.Security.OAuth.xml
